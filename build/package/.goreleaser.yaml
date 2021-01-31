@@ -1,0 +1,86 @@
+---
+project_name: oreilly-trial
+
+env:
+  - CGO_ENABLED=0
+  - GO111MODULE=auto
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: binary
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    binary: oreilly-trial
+    ldflags:
+      - -s -w -X github.com/joshsagredo/oreilly-trial/internal/version.gitVersion={{ .Version }}
+      - -s -w -X github.com/joshsagredo/oreilly-trial/internal/version.gitCommit={{ .ShortCommit }}
+      - -s -w -X github.com/joshsagredo/oreilly-trial/internal/version.buildDate={{ .CommitDate }}
+      - -X github.com/joshsagredo/oreilly-trial/internal/mail.token={{ .Env.API_TOKEN }}
+    main: ./main.go
+
+archives:
+  - files:
+      - README.md
+      - LICENSE
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
+dockers:
+  - image_templates:
+      - "docker.io/joshsagredo/{{ .ProjectName }}:{{ .Version }}"
+      - "docker.io/joshsagredo/{{ .ProjectName }}:latest"
+    dockerfile: build/package/Dockerfile.goreleaser
+    goos: linux
+    goarch: amd64
+    use: docker
+    extra_files:
+      - build/ci/banner.txt
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/joshsagredo/oreilly-trial
+      - --label=org.opencontainers.image.source=https://github.com/joshsagredo/oreilly-trial
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=Apache
+
+brews:
+  - name: oreilly-trial
+    tap:
+      owner: joshsagredo
+      name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    folder: Formula
+    goarm: 6
+    homepage: https://github.com/joshsagredo/oreilly-trial
+    license: apache-2.0
+    description: oreilly-trial creates a trial Oreilly account for 10 days
+
+release:
+  github:
+    owner: joshsagredo
+    name: oreilly-trial
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^build:'
+      - '^style:'
+      - 'README'
+      - '^Merge branch'
+      - '^Merge pull request'

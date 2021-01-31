@@ -1,0 +1,183 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  GO111MODULE: on
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Lint code
+        run: make -s lint
+      - name: Clean downloaded binaries
+        run: make -s clean
+
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Run fmt
+        run: make -s fmt
+      - name: Clean downloaded binaries
+        run: make -s clean
+
+  tests:
+    strategy:
+      matrix:
+        name: [unit, e2e]
+    runs-on: ubuntu-latest
+    name: test (${{ matrix.name }})
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Run ${{ matrix.name }} tests
+        run: make -s test-${{ matrix.name }}
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+
+  staticcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: dominikh/staticcheck-action@v1.3.0
+        with:
+          version: "2022.1.3"
+
+  codeql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: go
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Coverage Test
+        run: make -s test
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        with:
+          args: >
+            -Dproject.settings=build/ci/sonar-project.properties
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  builds:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: build (${{ matrix.os }})
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Build on (${{ matrix.os }})
+        run: make -s build
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+
+  tag:
+    runs-on: ubuntu-latest
+    needs: [lint, fmt, tests, codeql, sonarcloud, staticcheck, builds]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [tag]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set outputs
+        id: vars
+        run: |
+          echo "::set-output name=latest_tag::$(git describe --tags $(git rev-list --tags --max-count=1))"
+          echo "::set-output name=build_time::$(date -u +'%m-%d-%YT%H:%M:%SZ')"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          args: release --clean --config build/package/.goreleaser.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}

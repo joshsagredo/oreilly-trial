@@ -1,0 +1,36 @@
+ignoreGeneratedHeader = false
+severity = "error"
+confidence = 0.8
+errorCode = 1
+
+# https://github.com/mgechev/revive#available-rules
+[rule.atomic]
+# [rule.blank-imports] # commented out because of automaxprocs blank import in cmd/root.go
+[rule.bool-literal-in-expr]
+[rule.confusing-results]
+[rule.constant-logical-expr]
+[rule.context-keys-type]
+[rule.dot-imports]
+[rule.empty-block]
+[rule.error-naming]
+[rule.error-return]
+[rule.errorf]
+[rule.get-return]
+[rule.if-return]
+[rule.increment-decrement]
+[rule.indent-error-flow]
+[rule.modifies-parameter]
+[rule.modifies-value-receiver]
+[rule.range-val-address]
+[rule.range-val-in-closure]
+[rule.range]
+[rule.receiver-naming]
+[rule.redefines-builtin-id]
+[rule.string-of-int]
+[rule.struct-tag]
+[rule.superfluous-else]
+[rule.time-naming]
+[rule.unexported-return]
+[rule.unreachable-code]
+[rule.var-declaration]
+[rule.waitgroup-by-value]
