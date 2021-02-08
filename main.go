@@ -21,9 +21,6 @@ func main() {
 	username := generateUsername(*length)
 	password := generatePassword(*length)
 
-	log.Printf("generated username = %s\n", username)
-	log.Printf("generated password = %s\n", password)
-
 	emailAddr := fmt.Sprintf("%s@%s", username, *emailDomain)
 	firstName := "John"
 	lastName := "Doe"
@@ -73,7 +70,6 @@ func main() {
 	}
 
 	if resp.StatusCode == 201 {
-		log.Println("successfully created trial account!")
 		successResponse := SuccessResponse{}
 		err := json.Unmarshal(body, &successResponse)
 		if err != nil {

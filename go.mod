@@ -1,3 +1,3 @@
-module safari-trial
+module oreilly-trial
 
 go 1.15
