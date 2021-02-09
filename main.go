@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,9 +18,16 @@ func main() {
 	length := flag.Int("length", 12, "length of the random generated username and password")
 	flag.Parse()
 
+	logger, err := zap.NewProduction()
+	if err != nil {
+		panic(err)
+	}
+
 	createUserUrl := "https://learning.oreilly.com/api/v1/user/"
 	username := generateUsername(*length)
 	password := generatePassword(*length)
+	logger.Info("random credentials generated", zap.String("username", username),
+		zap.String("password", password))
 
 	emailAddr := fmt.Sprintf("%s@%s", username, *emailDomain)
 	firstName := "John"
@@ -36,12 +44,12 @@ func main() {
 	}
 	jsonData, err := json.Marshal(values)
 	if err != nil {
-		log.Panicln(err)
+		panic(err)
 	}
 
 	req, err := http.NewRequest("POST", createUserUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
-		log.Panicln(err)
+		panic(err)
 	}
 	req.Header.Set("authority", "learning.oreilly.com")
 	req.Header.Set("pragma", "no-cache")
@@ -59,32 +67,33 @@ func main() {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Panicln(err)
+		panic(err)
 	}
-	defer resp.Body.Close()
 
+	defer func() {
+		err = resp.Body.Close()
+	}()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Panicln(err)
+		panic(err)
 	}
 
 	if resp.StatusCode == 201 {
 		successResponse := SuccessResponse{}
 		err := json.Unmarshal(body, &successResponse)
 		if err != nil {
-			log.Panicln(err)
+			logger.Fatal("fatal error occured while unmarshaling response body", zap.String("error", err.Error()))
 		}
 
-		log.Printf("Trial account successfully created!\nemail = %s\npassword = %s\nuser_id = %s\n", emailAddr,
-			password, successResponse.UserID)
+		logger.Info("trial account successfully created", zap.String("email", emailAddr),
+			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
-		log.Println("an error occured while creating trial account, please try again!")
-		log.Printf("status code = %d\n", resp.StatusCode)
+		logger.Error("an error occured while creating trial account, please try again!")
 		failureResponse := FailureResponse{}
 		err := json.Unmarshal(body, &failureResponse)
 		if err != nil {
-			log.Panicln(err)
+			panic(err)
 		}
 
 		log.Printf("error messages = %v\n", failureResponse.Email)
