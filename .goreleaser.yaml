@@ -1,3 +1,4 @@
+project_name: oreilly-trial
 env:
   - CGO_ENABLED=0
   - GOFLAGS=-mod=vendor
