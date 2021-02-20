@@ -1,31 +1,31 @@
 test:
-	go test .
+	go test ./...
 
 build:
-	go build -o bin/main *.go
+	go build ./...
 
 run:
-	go run *.go
+	go run ./...
 
-compile:
+cross-compile:
 	# 32-Bit Systems
 	# FreeBDS
-	GOOS=freebsd GOARCH=386 go build -o bin/main-freebsd-386 *.go
+	GOOS=freebsd GOARCH=386 go build -o bin/main-freebsd-386 ./...
 	# MacOS
-	GOOS=darwin GOARCH=386 go build -o bin/main-darwin-386 *.go
+	GOOS=darwin GOARCH=386 go build -o bin/main-darwin-386 ./...
 	# Linux
-	GOOS=linux GOARCH=386 go build -o bin/main-linux-386 *.go
+	GOOS=linux GOARCH=386 go build -o bin/main-linux-386 ./...
 	# Windows
-	GOOS=windows GOARCH=386 go build -o bin/main-windows-386 *.go
+	GOOS=windows GOARCH=386 go build -o bin/main-windows-386 ./...
         # 64-Bit
 	# FreeBDS
-	GOOS=freebsd GOARCH=amd64 go build -o bin/main-freebsd-amd64 *.go
+	GOOS=freebsd GOARCH=amd64 go build -o bin/main-freebsd-amd64 ./...
 	# MacOS
-	GOOS=darwin GOARCH=amd64 go build -o bin/main-darwin-amd64 *.go
+	GOOS=darwin GOARCH=amd64 go build -o bin/main-darwin-amd64 ./...
 	# Linux
-	GOOS=linux GOARCH=amd64 go build -o bin/main-linux-amd64 *.go
+	GOOS=linux GOARCH=amd64 go build -o bin/main-linux-amd64 ./...
 	# Windows
-	GOOS=windows GOARCH=amd64 go build -o bin/main-windows-amd64 *.go
+	GOOS=windows GOARCH=amd64 go build -o bin/main-windows-amd64 ./...
 
 
 all: test run

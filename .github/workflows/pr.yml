@@ -8,8 +8,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
         with:
           go-version: 1.15.x
       - name: Lint
@@ -24,25 +26,26 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Test
         run: go test ./...
 
   test-cache:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.15.x
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - name: Test cache
+        uses: actions/cache@v2
         with:
           path: |
             ~/go/pkg/mod              # Module download cache
@@ -54,3 +57,23 @@ jobs:
             ${{ runner.os }}-go-
       - name: Test
         run: go test ./...
+
+  build:
+    needs:
+      - lint
+      - test
+      - test-cache
+    strategy:
+      matrix:
+        go-version: [ 1.14.x, 1.15.x ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Test
+        run: make build
