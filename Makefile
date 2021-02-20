@@ -7,6 +7,9 @@ build:
 run:
 	go run ./...
 
+lint:
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.26.0 && golangci-lint run
+
 cross-compile:
 	# 32-Bit Systems
 	# FreeBDS
