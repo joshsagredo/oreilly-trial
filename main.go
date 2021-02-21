@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
+	flag "github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"log"
@@ -14,8 +14,8 @@ import (
 var (
 	logger *zap.Logger
 	err error
-	emailDomain *string
-	length *int
+	emailDomain string
+	length int
 )
 
 func init() {
@@ -25,20 +25,20 @@ func init() {
 	}
 
 	// for more usable domains, check https://temp-mail.org/
-	emailDomain = flag.String("emailDomain", "jentrix.com", "usable domain for creating trial " +
+	flag.StringVar(&emailDomain, "emailDomain", "jentrix.com", "usable domain for creating trial " +
 		"account, it should be a valid domain")
-	length = flag.Int("length", 12, "length of the random generated username and password")
+	flag.IntVar(&length, "length", 12, "length of the random generated username and password")
 	flag.Parse()
 }
 
 func main() {
 	createUserUrl := "https://learning.oreilly.com/api/v1/user/"
-	username := generateUsername(*length)
-	password := generatePassword(*length)
+	username := generateUsername(length)
+	password := generatePassword(length)
 	logger.Info("random credentials generated", zap.String("username", username),
 		zap.String("password", password))
 
-	emailAddr := fmt.Sprintf("%s@%s", username, *emailDomain)
+	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
 	firstName := "John"
 	lastName := "Doe"
 	values := map[string]string{"email": emailAddr,
