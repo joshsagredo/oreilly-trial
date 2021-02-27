@@ -1,4 +1,4 @@
-package main
+package http
 
 type SuccessResponse struct {
 	UserID string `json:"user_id"`

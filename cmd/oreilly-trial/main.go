@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	http2 "oreilly-trial/pkg/http"
+	"oreilly-trial/pkg/random"
 )
 
 var (
@@ -33,15 +35,16 @@ func init() {
 
 func main() {
 	createUserUrl := "https://learning.oreilly.com/api/v1/user/"
-	username := generateUsername(length)
-	password := generatePassword(length)
+	username := random.GenerateUsername(length)
+	password := random.GeneratePassword(length)
 	logger.Info("random credentials generated", zap.String("username", username),
 		zap.String("password", password))
 
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
 	firstName := "John"
 	lastName := "Doe"
-	values := map[string]string{"email": emailAddr,
+	values := map[string]string{
+		"email": emailAddr,
 		"password": password,
 		"first_name": firstName,
 		"last_name": lastName,
@@ -61,7 +64,7 @@ func main() {
 		panic(err)
 	}
 
-	setHeaders(req)
+	http2.SetRequestHeaders(req)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -79,7 +82,7 @@ func main() {
 	}
 
 	if resp.StatusCode == 201 {
-		successResponse := SuccessResponse{}
+		successResponse := http2.SuccessResponse{}
 		err := json.Unmarshal(body, &successResponse)
 		if err != nil {
 			logger.Fatal("fatal error occured while unmarshaling response body", zap.String("error", err.Error()))
@@ -89,7 +92,7 @@ func main() {
 			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
 		logger.Error("an error occured while creating trial account, please try again!")
-		failureResponse := FailureResponse{}
+		failureResponse := http2.FailureResponse{}
 		err := json.Unmarshal(body, &failureResponse)
 		if err != nil {
 			panic(err)
