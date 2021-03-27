@@ -7,7 +7,6 @@ import (
 	flag "github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"io/ioutil"
-	"log"
 	"net/http"
 	http2 "oreilly-trial/pkg/http"
 	"oreilly-trial/pkg/random"
@@ -97,7 +96,5 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-
-		log.Printf("error messages = %v\n", failureResponse.Email)
 	}
 }
