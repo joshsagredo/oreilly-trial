@@ -55,12 +55,12 @@ func main() {
 	}
 	jsonData, err := json.Marshal(values)
 	if err != nil {
-		panic(err)
+		logger.Fatal("fatal error occured while marshaling request body", zap.String("error", err.Error()))
 	}
 
 	req, err := http.NewRequest("POST", createUserUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
-		panic(err)
+		logger.Fatal("fatal error occured while creating new POST request", zap.String("error", err.Error()))
 	}
 
 	http2.SetRequestHeaders(req)
@@ -68,7 +68,7 @@ func main() {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		logger.Fatal("fatal error occured while making HTTP request", zap.String("error", err.Error()))
 	}
 
 	defer func() {
@@ -77,7 +77,7 @@ func main() {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		logger.Fatal("fatal error occured while reading response body", zap.String("error", err.Error()))
 	}
 
 	if resp.StatusCode == 201 {
@@ -94,7 +94,7 @@ func main() {
 		failureResponse := http2.FailureResponse{}
 		err := json.Unmarshal(body, &failureResponse)
 		if err != nil {
-			panic(err)
+			logger.Fatal("fatal error occured while unmarshaling response body", zap.String("error", err.Error()))
 		}
 	}
 }
