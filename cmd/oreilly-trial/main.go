@@ -14,6 +14,7 @@ import (
 
 var (
 	logger *zap.Logger
+	client *http.Client
 	err error
 	emailDomain string
 	length int
@@ -24,6 +25,8 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	client = &http.Client{}
 
 	// for more usable domains, check https://temp-mail.org/
 	flag.StringVar(&emailDomain, "emailDomain", "jentrix.com", "usable domain for creating trial " +
@@ -40,13 +43,11 @@ func main() {
 		zap.String("password", password))
 
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
-	firstName := "John"
-	lastName := "Doe"
 	values := map[string]string{
 		"email": emailAddr,
 		"password": password,
-		"first_name": firstName,
-		"last_name": lastName,
+		"first_name": "John",
+		"last_name": "Doe",
 		"country": "US",
 		"t_c_agreement": "true",
 		"contact": "true",
@@ -65,7 +66,6 @@ func main() {
 
 	http2.SetRequestHeaders(req)
 
-	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		logger.Fatal("fatal error occured while making HTTP request", zap.String("error", err.Error()))
