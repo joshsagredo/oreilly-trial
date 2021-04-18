@@ -6,12 +6,20 @@ import (
 	"time"
 )
 
+var (
+	chars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+		"abcdefghijklmnopqrstuvwxyz" +
+		"0123456789")
+	digits = "0123456789"
+	specials = "=+*/!@#$?"
+	all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+		"abcdefghijklmnopqrstuvwxyz" +
+		digits + specials
+)
+
 // GenerateUsername This code generates a random string of numbers and characters
 func GenerateUsername(length int) string {
 	rand.Seed(time.Now().UnixNano())
-	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		"0123456789")
 	var b strings.Builder
 	for i := 0; i < length; i++ {
 		b.WriteRune(chars[rand.Intn(len(chars))])
@@ -22,11 +30,6 @@ func GenerateUsername(length int) string {
 // GeneratePassword This code generates a random ASCII string with at least one digit and one special character.
 func GeneratePassword(length int) string {
 	rand.Seed(time.Now().UnixNano())
-	digits := "0123456789"
-	specials := "~=+%^*/()[]{}/!@#$?|"
-	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		digits + specials
 	buf := make([]byte, length)
 	buf[0] = digits[rand.Intn(len(digits))]
 	buf[1] = specials[rand.Intn(len(specials))]

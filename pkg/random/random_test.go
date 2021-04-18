@@ -9,9 +9,6 @@ import (
 
 func TestGenerateUsername(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		"0123456789")
 	cases := []struct{
 		caseName string
 		randomLength int
@@ -34,11 +31,6 @@ func TestGenerateUsername(t *testing.T) {
 
 func TestGeneratePassword(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	digits := "0123456789"
-	specials := "~=+%^*/()[]{}/!@#$?|"
-	all := "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		digits + specials
 	cases := []struct{
 		caseName string
 		randomLength int
