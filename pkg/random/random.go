@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// This code generates a random string of numbers and characters
+// GenerateUsername This code generates a random string of numbers and characters
 func GenerateUsername(length int) string {
 	rand.Seed(time.Now().UnixNano())
 	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
@@ -19,7 +19,7 @@ func GenerateUsername(length int) string {
 	return b.String()
 }
 
-// This code generates a random ASCII string with at least one digit and one special character.
+// GeneratePassword This code generates a random ASCII string with at least one digit and one special character.
 func GeneratePassword(length int) string {
 	rand.Seed(time.Now().UnixNano())
 	digits := "0123456789"

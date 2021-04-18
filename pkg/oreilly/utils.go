@@ -1,8 +1,8 @@
-package http
+package oreilly
 
 import "net/http"
 
-func SetRequestHeaders(req *http.Request) {
+func setRequestHeaders(req *http.Request) {
 	req.Header.Set("authority", "learning.oreilly.com")
 	req.Header.Set("pragma", "no-cache")
 	req.Header.Set("cache-control", "no-cache")

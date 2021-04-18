@@ -1,33 +1,21 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	_ "github.com/dimiro1/banner/autoload"
 	flag "github.com/spf13/pflag"
 	"go.uber.org/zap"
-	"io/ioutil"
-	"net/http"
-	http2 "oreilly-trial/pkg/http"
-	"oreilly-trial/pkg/random"
+	"oreilly-trial/pkg/logging"
+	"oreilly-trial/pkg/oreilly"
 )
 
 var (
 	logger *zap.Logger
-	client *http.Client
-	err error
 	emailDomain string
 	length int
 )
 
 func init() {
-	logger, err = zap.NewProduction()
-	if err != nil {
-		panic(err)
-	}
-
-	client = &http.Client{}
+	logger = logging.GetLogger()
 
 	// for more usable domains, check https://temp-mail.org/
 	flag.StringVar(&emailDomain, "emailDomain", "jentrix.com", "usable domain for creating trial " +
@@ -37,65 +25,8 @@ func init() {
 }
 
 func main() {
-	createUserUrl := "https://learning.oreilly.com/api/v1/user/"
-	username := random.GenerateUsername(length)
-	password := random.GeneratePassword(length)
-	logger.Info("random credentials generated", zap.String("username", username),
-		zap.String("password", password))
-
-	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
-	values := map[string]string{
-		"email": emailAddr,
-		"password": password,
-		"first_name": "John",
-		"last_name": "Doe",
-		"country": "US",
-		"t_c_agreement": "true",
-		"contact": "true",
-		"path": "/register/",
-		"source": "payments-client-register",
-	}
-	jsonData, err := json.Marshal(values)
+	err := oreilly.Generate(emailDomain, length)
 	if err != nil {
-		logger.Fatal("fatal error occured while marshaling request body", zap.String("error", err.Error()))
-	}
-
-	req, err := http.NewRequest("POST", createUserUrl, bytes.NewBuffer(jsonData))
-	if err != nil {
-		logger.Fatal("fatal error occured while creating new POST request", zap.String("error", err.Error()))
-	}
-
-	http2.SetRequestHeaders(req)
-
-	resp, err := client.Do(req)
-	if err != nil {
-		logger.Fatal("fatal error occured while making HTTP request", zap.String("error", err.Error()))
-	}
-
-	defer func() {
-		err = resp.Body.Close()
-	}()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		logger.Fatal("fatal error occured while reading response body", zap.String("error", err.Error()))
-	}
-
-	if resp.StatusCode == 201 {
-		successResponse := http2.SuccessResponse{}
-		err := json.Unmarshal(body, &successResponse)
-		if err != nil {
-			logger.Fatal("fatal error occured while unmarshaling response body", zap.String("error", err.Error()))
-		}
-
-		logger.Info("trial account successfully created", zap.String("email", emailAddr),
-			zap.String("password", password), zap.String("user_id", successResponse.UserID))
-	} else {
-		logger.Error("an error occured while creating trial account, please try again!")
-		failureResponse := http2.FailureResponse{}
-		err := json.Unmarshal(body, &failureResponse)
-		if err != nil {
-			logger.Fatal("fatal error occured while unmarshaling response body", zap.String("error", err.Error()))
-		}
+		logger.Fatal("an error occured while generating user", zap.String("error", err.Error()))
 	}
 }
