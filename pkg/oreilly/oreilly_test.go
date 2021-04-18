@@ -76,7 +76,12 @@ func TestGenerate(t *testing.T) {
 
 				t.Logf("trial account successfully created")
 			} else {
-				t.Fatalf("an error occured while creating user")
+				bodyBytes, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				t.Fatalf("an error occured while creating user. responseBody=%s\n", string(bodyBytes))
 			}
 		})
 	}
