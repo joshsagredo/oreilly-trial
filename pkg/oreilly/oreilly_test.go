@@ -11,9 +11,6 @@ import (
 )
 
 func TestGenerate(t *testing.T) {
-	createUserUrl := "https://learning.oreilly.com/api/v1/user/"
-	emailDomain := "jentrix.com"
-	randomLength := 10
 	cases := []struct{
 		caseName, username, password string
 	}{
