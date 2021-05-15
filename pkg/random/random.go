@@ -10,9 +10,9 @@ var (
 	chars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 		"abcdefghijklmnopqrstuvwxyz" +
 		"0123456789")
-	digits = "0123456789"
+	digits   = "0123456789"
 	specials = "=+*/!@#$?"
-	all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+	all      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 		"abcdefghijklmnopqrstuvwxyz" +
 		digits + specials
 )

@@ -13,11 +13,11 @@ import (
 )
 
 var (
-	logger *zap.Logger
-	client *http.Client
-	err error
+	logger                     *zap.Logger
+	client                     *http.Client
+	err                        error
 	createUserUrl, emailDomain string
-	randomLength int
+	randomLength               int
 )
 
 func init() {
@@ -30,7 +30,7 @@ func init() {
 	flag.StringVar(&createUserUrl, "createUserUrl", "https://learning.oreilly.com/api/v1/user/",
 		"url of the user creation on Oreilly API")
 	// for more usable domains, check https://temp-mail.org/
-	flag.StringVar(&emailDomain, "emailDomain", "jentrix.com", "usable domain for creating trial " +
+	flag.StringVar(&emailDomain, "emailDomain", "jentrix.com", "usable domain for creating trial "+
 		"account, it should be a valid domain")
 	flag.IntVar(&randomLength, "length", 12, "length of the random generated username and password")
 	flag.Parse()
@@ -44,15 +44,15 @@ func Generate() error {
 
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
 	values := map[string]string{
-		"email": emailAddr,
-		"password": password,
-		"first_name": "John",
-		"last_name": "Doe",
-		"country": "US",
+		"email":         emailAddr,
+		"password":      password,
+		"first_name":    "John",
+		"last_name":     "Doe",
+		"country":       "US",
 		"t_c_agreement": "true",
-		"contact": "true",
-		"path": "/register/",
-		"source": "payments-client-register",
+		"contact":       "true",
+		"path":          "/register/",
+		"source":        "payments-client-register",
 	}
 	jsonData, err := json.Marshal(values)
 	if err != nil {

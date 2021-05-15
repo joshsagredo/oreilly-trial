@@ -11,7 +11,7 @@ import (
 )
 
 func TestGenerate(t *testing.T) {
-	cases := []struct{
+	cases := []struct {
 		caseName, username, password string
 	}{
 		{"case1", random.GenerateUsername(randomLength),
@@ -24,15 +24,15 @@ func TestGenerate(t *testing.T) {
 		t.Run(tc.caseName, func(t *testing.T) {
 			emailAddr := fmt.Sprintf("%s@%s", tc.username, emailDomain)
 			values := map[string]string{
-				"email": emailAddr,
-				"password": tc.password,
-				"first_name": "John",
-				"last_name": "Doe",
-				"country": "US",
+				"email":         emailAddr,
+				"password":      tc.password,
+				"first_name":    "John",
+				"last_name":     "Doe",
+				"country":       "US",
 				"t_c_agreement": "true",
-				"contact": "true",
-				"path": "/register/",
-				"source": "payments-client-register",
+				"contact":       "true",
+				"path":          "/register/",
+				"source":        "payments-client-register",
 			}
 
 			jsonData, err := json.Marshal(values)

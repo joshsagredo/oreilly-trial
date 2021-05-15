@@ -9,7 +9,6 @@ import (
 
 var (
 	logger *zap.Logger
-
 )
 
 func init() {

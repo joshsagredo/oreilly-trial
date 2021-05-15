@@ -9,8 +9,8 @@ import (
 
 func TestGenerateUsername(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	cases := []struct{
-		caseName string
+	cases := []struct {
+		caseName     string
 		randomLength int
 	}{
 		{"random10", 10},
@@ -31,8 +31,8 @@ func TestGenerateUsername(t *testing.T) {
 
 func TestGeneratePassword(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	cases := []struct{
-		caseName string
+	cases := []struct {
+		caseName     string
 		randomLength int
 	}{
 		{"random10", 10},

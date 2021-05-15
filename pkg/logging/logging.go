@@ -4,7 +4,7 @@ import "go.uber.org/zap"
 
 var (
 	logger *zap.Logger
-	err error
+	err    error
 )
 
 func init() {
