@@ -14,6 +14,7 @@ func init() {
 	}
 }
 
+// GetLogger returns the shared *zap.Logger
 func GetLogger() *zap.Logger {
 	return logger
 }

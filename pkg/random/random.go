@@ -17,7 +17,7 @@ var (
 		digits + specials
 )
 
-// GenerateUsername This code generates a random string of numbers and characters
+// GenerateUsername generates a random string of numbers and characters
 func GenerateUsername(length int) string {
 	rand.Seed(time.Now().UnixNano())
 	var b strings.Builder
@@ -27,7 +27,7 @@ func GenerateUsername(length int) string {
 	return b.String()
 }
 
-// GeneratePassword This code generates a random ASCII string with at least one digit and one special character.
+// GeneratePassword generates a random ASCII string with at least one digit and one special character.
 func GeneratePassword(length int) string {
 	rand.Seed(time.Now().UnixNano())
 	buf := make([]byte, length)

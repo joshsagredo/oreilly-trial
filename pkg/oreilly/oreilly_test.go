@@ -73,7 +73,7 @@ func TestGenerate(t *testing.T) {
 
 				t.Logf("trial account successfully created")
 			} else {
-				t.Fatalf("an error occured while creating user")
+				t.Fatalf("an error occurred while creating user")
 			}
 		})
 	}

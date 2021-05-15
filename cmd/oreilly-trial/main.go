@@ -18,6 +18,6 @@ func init() {
 func main() {
 	err := oreilly.Generate()
 	if err != nil {
-		logger.Fatal("an error occured while generating user", zap.String("error", err.Error()))
+		logger.Fatal("an error occurred while generating user", zap.String("error", err.Error()))
 	}
 }

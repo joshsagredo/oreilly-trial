@@ -36,6 +36,7 @@ func init() {
 	flag.Parse()
 }
 
+// Generate does the heavy lifting, communicates with the Oreilly API
 func Generate() error {
 	username := random.GenerateUsername(randomLength)
 	password := random.GeneratePassword(randomLength)
@@ -93,7 +94,7 @@ func Generate() error {
 		logger.Info("trial account successfully created", zap.String("email", emailAddr),
 			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
-		return errors.New("an error occured while creating trial account, please try again")
+		return errors.New("an error occurred while creating trial account, please try again")
 	}
 	return nil
 }
