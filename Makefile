@@ -8,7 +8,8 @@ vet:
 	go vet ./...
 
 ineffassign:
-	go get -u github.com/gordonklaus/ineffassign
+	go get github.com/gordonklaus/ineffassign
+	go mod vendor
 	ineffassign ./...
 
 test:
