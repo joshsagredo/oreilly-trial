@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "github.com/dimiro1/banner/autoload"
 	"go.uber.org/zap"
 	"oreilly-trial/pkg/logging"
 	"oreilly-trial/pkg/oreilly"
