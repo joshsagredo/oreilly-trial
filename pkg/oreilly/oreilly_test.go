@@ -22,6 +22,7 @@ func TestGenerate(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
+			emailDomain := random.PickEmail(emailDomains)
 			emailAddr := fmt.Sprintf("%s@%s", tc.username, emailDomain)
 			values := map[string]string{
 				"email":         emailAddr,
