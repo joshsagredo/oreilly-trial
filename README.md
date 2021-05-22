@@ -10,6 +10,14 @@ This tool does couple of simple steps to provide free trial account for you:
   - Register with temp mail to https://learning.oreilly.com/
   - Print the login information to console and then exit.
 
+### Configuration
+oreilly-trial can be customized with several command line arguments:
+```
+--createUserUrl             url of the user creation on Oreilly API. Defaults to https://learning.oreilly.com/api/v1/user/
+--emailDomains              comma seperated list of usable domain for creating trial account, it should be a valid domain. Defaults to {"jentrix.com", "geekale.com", "64ge.com", "frnla.com"}
+--length                    length of the random generated username and password. Defaults to 16.
+```
+
 ### Download
 
 #### Binary

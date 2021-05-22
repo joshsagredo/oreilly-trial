@@ -16,7 +16,8 @@ var (
 	logger                     *zap.Logger
 	client                     *http.Client
 	err                        error
-	createUserUrl, emailDomain string
+	createUserUrl			   string
+	emailDomains			   []string
 	randomLength               int
 )
 
@@ -30,9 +31,9 @@ func init() {
 	flag.StringVar(&createUserUrl, "createUserUrl", "https://learning.oreilly.com/api/v1/user/",
 		"url of the user creation on Oreilly API")
 	// for more usable domains, check https://temp-mail.org/
-	flag.StringVar(&emailDomain, "emailDomain", "jentrix.com", "usable domain for creating trial "+
-		"account, it should be a valid domain")
-	flag.IntVar(&randomLength, "length", 12, "length of the random generated username and password")
+	flag.StringSliceVar(&emailDomains, "emailDomains", []string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
+	"comma seperated list of usable domain for creating trial account, it should be a valid domain")
+	flag.IntVar(&randomLength, "length", 16, "length of the random generated username and password")
 	flag.Parse()
 }
 
@@ -43,6 +44,8 @@ func Generate() error {
 	logger.Info("random credentials generated", zap.String("username", username),
 		zap.String("password", password))
 
+	emailDomain := random.PickEmail(emailDomains)
+	logger.Info(emailDomain)
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
 	values := map[string]string{
 		"email":         emailAddr,

@@ -43,3 +43,8 @@ func GeneratePassword(length int) string {
 
 	return string(buf)
 }
+
+// PickEmail picks a random item from emailDomains slice
+func PickEmail(emailDomains []string) string {
+	return emailDomains[rand.Intn(len(emailDomains))]
+}
