@@ -5,20 +5,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	flag "github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
+	"oreilly-trial/pkg/options"
 	"oreilly-trial/pkg/random"
 )
 
 var (
-	logger                     *zap.Logger
-	client                     *http.Client
-	err                        error
-	createUserUrl			   string
-	emailDomains			   []string
-	randomLength               int
+	logger *zap.Logger
+	client *http.Client
+	err    error
 )
 
 func init() {
@@ -28,23 +25,16 @@ func init() {
 	}
 
 	client = &http.Client{}
-	flag.StringVar(&createUserUrl, "createUserUrl", "https://learning.oreilly.com/api/v1/user/",
-		"url of the user creation on Oreilly API")
-	// for more usable domains, check https://temp-mail.org/
-	flag.StringSliceVar(&emailDomains, "emailDomains", []string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
-	"comma seperated list of usable domain for creating trial account, it should be a valid domain")
-	flag.IntVar(&randomLength, "length", 16, "length of the random generated username and password")
-	flag.Parse()
 }
 
 // Generate does the heavy lifting, communicates with the Oreilly API
-func Generate() error {
-	username := random.GenerateUsername(randomLength)
-	password := random.GeneratePassword(randomLength)
+func Generate(options *options.OreillyTrialOptions) error {
+	username := random.GenerateUsername(options.RandomLength)
+	password := random.GeneratePassword(options.RandomLength)
 	logger.Info("random credentials generated", zap.String("username", username),
 		zap.String("password", password))
 
-	emailDomain := random.PickEmail(emailDomains)
+	emailDomain := random.PickEmail(options.EmailDomains)
 	logger.Info(emailDomain)
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
 	values := map[string]string{
@@ -63,7 +53,7 @@ func Generate() error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", createUserUrl, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", options.CreateUserUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err
 	}

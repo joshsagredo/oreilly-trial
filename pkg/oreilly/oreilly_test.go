@@ -6,27 +6,37 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"oreilly-trial/pkg/options"
 	"oreilly-trial/pkg/random"
 	"testing"
 )
 
 func TestGenerate(t *testing.T) {
 	cases := []struct {
-		caseName, username, password string
+		caseName string
+		oto      options.OreillyTrialOptions
 	}{
-		{"case1", random.GenerateUsername(randomLength),
-			random.GeneratePassword(randomLength)},
-		{"case2", random.GenerateUsername(randomLength),
-			random.GeneratePassword(randomLength)},
+		{"case1", options.OreillyTrialOptions{
+			CreateUserUrl: "https://learning.oreilly.com/api/v1/user/",
+			EmailDomains:  []string{"jentrix.com"},
+			RandomLength:  12,
+		}},
+		{"case2", options.OreillyTrialOptions{
+			CreateUserUrl: "https://learning.oreilly.com/api/v1/user/",
+			EmailDomains:  []string{"geekale.com", "64ge.com"},
+			RandomLength:  12,
+		}},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			emailDomain := random.PickEmail(emailDomains)
-			emailAddr := fmt.Sprintf("%s@%s", tc.username, emailDomain)
+			username := random.GenerateUsername(tc.oto.RandomLength)
+			password := random.GeneratePassword(tc.oto.RandomLength)
+			emailDomain := random.PickEmail(tc.oto.EmailDomains)
+			emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
 			values := map[string]string{
 				"email":         emailAddr,
-				"password":      tc.password,
+				"password":      password,
 				"first_name":    "John",
 				"last_name":     "Doe",
 				"country":       "US",
@@ -41,7 +51,8 @@ func TestGenerate(t *testing.T) {
 				t.Fatalf("%v\n", err.Error())
 			}
 
-			req, err := http.NewRequest("POST", createUserUrl, bytes.NewBuffer(jsonData))
+			req, err := http.NewRequest("POST", tc.oto.CreateUserUrl, bytes.NewBuffer(jsonData))
+
 			if err != nil {
 				t.Fatalf("%v\n", err.Error())
 			}
