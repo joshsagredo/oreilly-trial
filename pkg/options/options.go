@@ -21,7 +21,7 @@ type OreillyTrialOptions struct {
 }
 
 func (oto *OreillyTrialOptions) AddFlags(fs *pflag.FlagSet) {
-	fs.StringVar(&oto.CreateUserUrl, "createUserUrl", "https://learning.oreilly.com/api/v1/user/",
+	fs.StringVar(&oto.CreateUserUrl, "createUserUrl", "https://learning.oreilly.com/api/v1/registration/individual/",
 		"url of the user creation on Oreilly API")
 	// for more usable domains, check https://temp-mail.org/
 	fs.StringSliceVar(&oto.EmailDomains, "emailDomains", []string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},

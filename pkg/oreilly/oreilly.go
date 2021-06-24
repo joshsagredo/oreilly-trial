@@ -33,6 +33,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 	emailDomain := random.PickEmail(options.EmailDomains)
 	logger.Info(emailDomain)
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
+	logger.Info(emailAddr)
 	values := map[string]string{
 		"email":         emailAddr,
 		"password":      password,
@@ -41,6 +42,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 		"country":       "US",
 		"t_c_agreement": "true",
 		"contact":       "true",
+		"trial_length":  "10",
 		"path":          "/register/",
 		"source":        "payments-client-register",
 	}
@@ -73,7 +75,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 		return err
 	}
 
-	if resp.StatusCode == 201 {
+	if resp.StatusCode == 200 {
 		successResponse := successResponse{}
 		err := json.Unmarshal(body, &successResponse)
 		if err != nil {
@@ -83,7 +85,9 @@ func Generate(options *options.OreillyTrialOptions) error {
 		logger.Info("trial account successfully created", zap.String("email", emailAddr),
 			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
+		logger.Info(string(body))
 		return errors.New("an error occurred while creating trial account, please try again")
 	}
+
 	return nil
 }
