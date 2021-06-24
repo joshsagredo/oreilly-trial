@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
+	"oreilly-trial/pkg/logging"
 	"oreilly-trial/pkg/options"
 	"oreilly-trial/pkg/random"
 )
@@ -15,15 +16,10 @@ import (
 var (
 	logger *zap.Logger
 	client *http.Client
-	err    error
 )
 
 func init() {
-	logger, err = zap.NewProduction()
-	if err != nil {
-		panic(err)
-	}
-
+	logger = logging.GetLogger()
 	client = &http.Client{}
 }
 
