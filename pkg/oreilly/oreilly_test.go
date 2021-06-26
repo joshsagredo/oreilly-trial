@@ -17,14 +17,14 @@ func TestGenerate(t *testing.T) {
 		oto      options.OreillyTrialOptions
 	}{
 		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl: "https://learning.oreilly.com/api/v1/user/",
+			CreateUserUrl: "https://learning.oreilly.com/api/v1/registration/individual/",
 			EmailDomains:  []string{"jentrix.com"},
 			RandomLength:  12,
 		}},
 		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl: "https://learning.oreilly.com/api/v1/user/",
+			CreateUserUrl: "https://learning.oreilly.com/api/v1/registration/individual/",
 			EmailDomains:  []string{"geekale.com", "64ge.com"},
-			RandomLength:  12,
+			RandomLength:  16,
 		}},
 	}
 
@@ -42,6 +42,7 @@ func TestGenerate(t *testing.T) {
 				"country":       "US",
 				"t_c_agreement": "true",
 				"contact":       "true",
+				"trial_length":  "10",
 				"path":          "/register/",
 				"source":        "payments-client-register",
 			}
@@ -76,7 +77,7 @@ func TestGenerate(t *testing.T) {
 				t.Fatalf("%v\n", err.Error())
 			}
 
-			if resp.StatusCode == 201 {
+			if resp.StatusCode == 200 {
 				successResponse := successResponse{}
 				err := json.Unmarshal(body, &successResponse)
 				if err != nil {
