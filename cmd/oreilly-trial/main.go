@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"oreilly-trial/pkg/logging"
 	"oreilly-trial/pkg/options"
@@ -17,9 +16,7 @@ func init() {
 }
 
 func main() {
-	oto := options.NewOreillyTrialOptions()
-	oto.AddFlags(pflag.CommandLine)
-	pflag.Parse()
+	oto := options.GetOreillyTrialOptions()
 	err := oreilly.Generate(oto)
 	if err != nil {
 		logger.Fatal("an error occurred while generating user", zap.String("error", err.Error()))
