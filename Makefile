@@ -41,5 +41,9 @@ cross-compile:
 	# Windows
 	GOOS=windows GOARCH=amd64 go build -o bin/main-windows-amd64 cmd/oreilly-trial/main.go
 
+upgrade-deps:
+	go get -u ./...
+	go mod tidy
+	go mod vendor
 
 all: test build run
