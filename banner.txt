@@ -15,4 +15,3 @@ Compiler: {{ .Compiler }}
 ENV: {{ .Env "GOPATH" }}
 Now: {{ .Now "Monday, 2 Jan 2006" }}
 BannerGeneratedAt: https://devops.datenkollektiv.de/banner.txt/index.html
-

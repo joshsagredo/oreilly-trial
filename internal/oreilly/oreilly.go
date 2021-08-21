@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/random"
+
+	"go.uber.org/zap"
 )
 
 var (

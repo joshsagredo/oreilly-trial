@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/dimiro1/banner"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
+
+	"github.com/dimiro1/banner"
+	"go.uber.org/zap"
 )
 
 var (
