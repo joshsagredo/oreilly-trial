@@ -34,9 +34,4 @@ This project requires below tools while developing:
 - [pre-commit](https://pre-commit.com/)
 - [golangci-lint](https://golangci-lint.run/usage/install/) - required by [pre-commit](https://pre-commit.com/)
 
-Do not forget to run below command before starting development:
-```
-$ go mod vendor
-```
-
 _**Happy learning!**_
