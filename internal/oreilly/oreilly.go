@@ -8,9 +8,9 @@ import (
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
-	"oreilly-trial/pkg/logging"
-	"oreilly-trial/pkg/options"
-	"oreilly-trial/pkg/random"
+	"oreilly-trial/internal/logging"
+	"oreilly-trial/internal/options"
+	"oreilly-trial/internal/random"
 )
 
 var (

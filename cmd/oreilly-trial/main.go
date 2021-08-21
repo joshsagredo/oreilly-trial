@@ -4,9 +4,9 @@ import (
 	"github.com/dimiro1/banner"
 	"go.uber.org/zap"
 	"io/ioutil"
-	"oreilly-trial/pkg/logging"
-	"oreilly-trial/pkg/options"
-	"oreilly-trial/pkg/oreilly"
+	"oreilly-trial/internal/logging"
+	"oreilly-trial/internal/options"
+	"oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
 )

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"oreilly-trial/pkg/options"
-	"oreilly-trial/pkg/random"
+	"oreilly-trial/internal/options"
+	"oreilly-trial/internal/random"
 	"testing"
 )
 
