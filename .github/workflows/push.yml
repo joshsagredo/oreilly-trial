@@ -48,7 +48,6 @@ jobs:
   test:
     strategy:
       matrix:
-        # os: [ubuntu-latest, macos-latest, windows-latest]
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -63,12 +62,28 @@ jobs:
       - name: Coverage Upload
         run: make coverage-upload
 
-  build:
+  coverage:
+    runs-on: ubuntu-latest
     needs:
       - lint
       - vet
       - ineffassign
       - test
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.x
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Coverage Test
+        run: make coverage-test
+      - name: Coverage Upload
+        run: make coverage-upload
+
+  build:
+    needs:
+      - coverage
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
