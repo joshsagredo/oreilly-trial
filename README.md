@@ -1,5 +1,5 @@
 ## Oreilly Trial
-
+[![codecov](https://codecov.io/gh/bilalcaliskan/oreilly-trial/branch/master/graph/badge.svg)](https://codecov.io/gh/bilalcaliskan/oreilly-trial)
 [![CI](https://github.com/bilalcaliskan/oreilly-trial/workflows/CI/badge.svg?event=push)](https://github.com/bilalcaliskan/oreilly-trial/actions?query=workflow%3ACI)
 [![Docker pulls](https://img.shields.io/docker/pulls/bilalcaliskan/oreilly-trial)](https://hub.docker.com/r/bilalcaliskan/oreilly-trial/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/bilalcaliskan/oreilly-trial)](https://goreportcard.com/report/github.com/bilalcaliskan/oreilly-trial)
