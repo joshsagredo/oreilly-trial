@@ -15,12 +15,6 @@ ineffassign:
 test:
 	go test ./...
 
-coverage-test:
-	go test ./... -race -coverprofile=coverage.txt -covermode=atomic
-
-coverage-upload:
-	bash <(curl -s https://codecov.io/bash)
-
 build:
 	go build -o bin/main cmd/oreilly-trial/main.go
 
