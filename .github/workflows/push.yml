@@ -60,7 +60,7 @@ jobs:
       - name: Coverage Test
         run: make coverage-test
       - name: Coverage Upload
-        run: make coverage-upload
+        run: bash <(curl -s https://codecov.io/bash)
 
   coverage:
     runs-on: ubuntu-latest
