@@ -1,4 +1,4 @@
-## Oreilly Trial
+# Oreilly Trial
 [![CI](https://github.com/bilalcaliskan/oreilly-trial/workflows/CI/badge.svg?event=push)](https://github.com/bilalcaliskan/oreilly-trial/actions?query=workflow%3ACI)
 [![Docker pulls](https://img.shields.io/docker/pulls/bilalcaliskan/oreilly-trial)](https://hub.docker.com/r/bilalcaliskan/oreilly-trial/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/bilalcaliskan/oreilly-trial)](https://goreportcard.com/report/github.com/bilalcaliskan/oreilly-trial)
@@ -10,7 +10,7 @@ This tool does couple of simple steps to provide free trial account for you:
   - Register with temp mail to https://learning.oreilly.com/
   - Print the login information to console and then exit.
 
-### Configuration
+## Configuration
 oreilly-trial can be customized with several command line arguments:
 ```
 --createUserUrl         url of the user creation on Oreilly API. Defaults to https://learning.oreilly.com/api/v1/user/
@@ -20,9 +20,9 @@ oreilly-trial can be customized with several command line arguments:
 
 > If you need more usable domains for email randomization, please check https://temp-mail.org/
 
-### Download
+## Download
 
-#### Binary
+### Binary
 Binary can be downloaded from [Releases](https://github.com/bilalcaliskan/oreilly-trial/releases) page.
 
 After then, you can simply run binary by providing required command line arguments:
@@ -30,15 +30,13 @@ After then, you can simply run binary by providing required command line argumen
 $ ./oreilly-trial --randomLength 12 --emailDomains jentrix.com,geekale.com
 ```
 
-#### Docker
+### Docker
 You can simply run docker image with default configuration:
 ```shell
 $ docker run bilalcaliskan/oreilly-trial:latest
 ```
 
-### Development
+## Development
 This project requires below tools while developing:
 - [pre-commit](https://pre-commit.com/)
 - [golangci-lint](https://golangci-lint.run/usage/install/) - required by [pre-commit](https://pre-commit.com/)
-
-_**Happy learning!**_
