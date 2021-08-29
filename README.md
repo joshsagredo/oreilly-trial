@@ -20,7 +20,7 @@ oreilly-trial can be customized with several command line arguments:
 
 > If you need more usable domains for email randomization, please check https://temp-mail.org/
 
-## Download
+## Installation
 
 ### Binary
 Binary can be downloaded from [Releases](https://github.com/bilalcaliskan/oreilly-trial/releases) page.
