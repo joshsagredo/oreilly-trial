@@ -32,9 +32,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 		zap.String("password", password))
 
 	emailDomain := random.PickEmail(options.EmailDomains)
-	logger.Info(emailDomain)
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
-	logger.Info(emailAddr)
 	values := map[string]string{
 		"email":         emailAddr,
 		"password":      password,
