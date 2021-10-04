@@ -1,14 +1,10 @@
 package random
 
 import (
-	"math/rand"
-	"strings"
 	"testing"
-	"time"
 )
 
 func TestGenerateUsername(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
 	cases := []struct {
 		caseName     string
 		randomLength int
@@ -19,18 +15,13 @@ func TestGenerateUsername(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			var b strings.Builder
-			for i := 0; i < tc.randomLength; i++ {
-				b.WriteRune(chars[rand.Intn(len(chars))])
-			}
-
-			t.Logf("username generated. username=%s\n", b.String())
+			username := GenerateUsername(tc.randomLength)
+			t.Logf("username generated. case=%s, username=%s\n", tc.caseName, username)
 		})
 	}
 }
 
 func TestGeneratePassword(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
 	cases := []struct {
 		caseName     string
 		randomLength int
@@ -41,18 +32,26 @@ func TestGeneratePassword(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			buf := make([]byte, tc.randomLength)
-			buf[0] = digits[rand.Intn(len(digits))]
-			buf[1] = specials[rand.Intn(len(specials))]
-			for i := 2; i < tc.randomLength; i++ {
-				buf[i] = all[rand.Intn(len(all))]
-			}
+			password := GeneratePassword(tc.randomLength)
+			t.Logf("password generated. case=%s, password=%s\n", tc.caseName, password)
+		})
+	}
+}
 
-			rand.Shuffle(len(buf), func(i, j int) {
-				buf[i], buf[j] = buf[j], buf[i]
-			})
+func TestPickEmail(t *testing.T) {
+	cases := []struct {
+		caseName     string
+		emailDomains []string
+	}{
+		{"random10", []string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"}},
+		{"random20", []string{"asdfasdfasdf.com", "dsfsdf.com", "64ge.com", "frnla.com"}},
+	}
 
-			t.Logf("password generated. password=%s\n", string(buf))
+	for _, tc := range cases {
+		t.Run(tc.caseName, func(t *testing.T) {
+			t.Logf("picking random email domain for case=%s\n", tc.caseName)
+			domain := PickEmail(tc.emailDomains)
+			t.Logf("random email domain selected. case=%s, domain=%s\n", tc.caseName, domain)
 		})
 	}
 }
