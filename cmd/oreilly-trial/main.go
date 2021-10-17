@@ -25,8 +25,7 @@ func init() {
 
 func main() {
 	oto := options.GetOreillyTrialOptions()
-	err := oreilly.Generate(oto)
-	if err != nil {
+	if err := oreilly.Generate(oto); err != nil {
 		logger.Fatal("an error occurred while generating user", zap.String("error", err.Error()))
 	}
 }

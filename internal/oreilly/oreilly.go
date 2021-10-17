@@ -63,8 +63,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 	}
 
 	defer func() {
-		err = resp.Body.Close()
-		if err != nil {
+		if err = resp.Body.Close(); err != nil {
 			panic(err)
 		}
 	}()
@@ -76,8 +75,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 
 	if resp.StatusCode == 200 {
 		successResponse := successResponse{}
-		err := json.Unmarshal(body, &successResponse)
-		if err != nil {
+		if err := json.Unmarshal(body, &successResponse); err != nil {
 			return err
 		}
 
