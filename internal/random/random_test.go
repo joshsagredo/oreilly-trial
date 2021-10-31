@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// TestGenerateUsername function tests if GenerateUsername function running properly
 func TestGenerateUsername(t *testing.T) {
 	cases := []struct {
 		caseName     string
@@ -21,6 +22,7 @@ func TestGenerateUsername(t *testing.T) {
 	}
 }
 
+// TestGeneratePassword function tests if GeneratePassword function running properly
 func TestGeneratePassword(t *testing.T) {
 	cases := []struct {
 		caseName     string
@@ -38,6 +40,7 @@ func TestGeneratePassword(t *testing.T) {
 	}
 }
 
+// TestPickEmail tests if PickEmail function is running properly
 func TestPickEmail(t *testing.T) {
 	cases := []struct {
 		caseName     string

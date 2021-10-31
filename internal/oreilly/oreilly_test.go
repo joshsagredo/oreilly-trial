@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestGenerate function tests if Generate function running properly
 func TestGenerate(t *testing.T) {
 	cases := []struct {
 		caseName string

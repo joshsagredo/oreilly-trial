@@ -26,6 +26,7 @@ type OreillyTrialOptions struct {
 	RandomLength int
 }
 
+// addFlags method adds the user provided command line arguments to OreillyTrialOptions
 func (oto *OreillyTrialOptions) addFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&oto.CreateUserUrl, "createUserUrl", "https://learning.oreilly.com/api/v1/registration/individual/",
 		"url of the user creation on Oreilly API")
