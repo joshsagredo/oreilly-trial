@@ -21,7 +21,6 @@ func init() {
 
 	core := zapcore.NewTee(zapcore.NewCore(zapcore.NewJSONEncoder(cfgConsole), zapcore.Lock(os.Stdout), zap.InfoLevel))
 	logger = zap.New(core)
-	logger.Info("An info level message")
 }
 
 // GetLogger returns the shared *zap.Logger

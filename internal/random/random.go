@@ -7,14 +7,10 @@ import (
 )
 
 var (
-	chars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		"0123456789")
+	chars    = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789")
 	digits   = "0123456789"
 	specials = "=+*/!@#$?"
-	all      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-		"abcdefghijklmnopqrstuvwxyz" +
-		digits + specials
+	all      = string(chars) + digits + specials
 )
 
 // GenerateUsername generates a random string of numbers and characters

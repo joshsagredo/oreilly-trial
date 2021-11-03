@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/random"
-
-	"go.uber.org/zap"
 )
 
 var (
@@ -25,14 +24,17 @@ func init() {
 }
 
 // Generate does the heavy lifting, communicates with the Oreilly API
-func Generate(options *options.OreillyTrialOptions) error {
-	username := random.GenerateUsername(options.RandomLength)
-	password := random.GeneratePassword(options.RandomLength)
-	logger.Info("random credentials generated", zap.String("username", username),
-		zap.String("password", password))
+func Generate(opts *options.OreillyTrialOptions) error {
+	// generate random username and password
+	username := random.GenerateUsername(opts.RandomLength)
+	password := random.GeneratePassword(opts.RandomLength)
+	logger.Info("random credentials generated", zap.String("username", username), zap.String("password", password))
 
-	emailDomain := random.PickEmail(options.EmailDomains)
+	// generate random email address from usable domains
+	emailDomain := random.PickEmail(opts.EmailDomains)
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
+
+	// prepare json data
 	values := map[string]string{
 		"email":         emailAddr,
 		"password":      password,
@@ -50,13 +52,12 @@ func Generate(options *options.OreillyTrialOptions) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", options.CreateUserUrl, bytes.NewBuffer(jsonData))
+	// prepare and make the request
+	req, err := http.NewRequest("POST", opts.CreateUserUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err
 	}
-
 	setRequestHeaders(req)
-
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -68,6 +69,7 @@ func Generate(options *options.OreillyTrialOptions) error {
 		}
 	}()
 
+	// read the response
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
