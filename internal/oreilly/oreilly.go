@@ -25,9 +25,18 @@ func init() {
 
 // Generate does the heavy lifting, communicates with the Oreilly API
 func Generate(opts *options.OreillyTrialOptions) error {
+	var (
+		username, password string
+		jsonData           []byte
+		req                *http.Request
+		resp               *http.Response
+		respBody           []byte
+		err                error
+	)
+
 	// generate random username and password
-	username := random.GenerateUsername(opts.RandomLength)
-	password := random.GeneratePassword(opts.RandomLength)
+	username = random.GenerateUsername(opts.RandomLength)
+	password = random.GeneratePassword(opts.RandomLength)
 	logger.Info("random credentials generated", zap.String("username", username), zap.String("password", password))
 
 	// generate random email address from usable domains
@@ -47,19 +56,18 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		"path":          "/register/",
 		"source":        "payments-client-register",
 	}
-	jsonData, err := json.Marshal(values)
-	if err != nil {
+
+	// marshall the json body
+	if jsonData, err = json.Marshal(values); err != nil {
 		return err
 	}
 
 	// prepare and make the request
-	req, err := http.NewRequest("POST", opts.CreateUserUrl, bytes.NewBuffer(jsonData))
-	if err != nil {
+	if req, err = http.NewRequest("POST", opts.CreateUserUrl, bytes.NewBuffer(jsonData)); err != nil {
 		return err
 	}
 	setRequestHeaders(req)
-	resp, err := client.Do(req)
-	if err != nil {
+	if resp, err = client.Do(req); err != nil {
 		return err
 	}
 
@@ -70,21 +78,20 @@ func Generate(opts *options.OreillyTrialOptions) error {
 	}()
 
 	// read the response
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	if respBody, err = ioutil.ReadAll(resp.Body); err != nil {
 		return err
 	}
 
 	if resp.StatusCode == 200 {
-		successResponse := successResponse{}
-		if err := json.Unmarshal(body, &successResponse); err != nil {
+		var successResponse successResponse
+		if err := json.Unmarshal(respBody, &successResponse); err != nil {
 			return err
 		}
 
 		logger.Info("trial account successfully created", zap.String("email", emailAddr),
 			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
-		logger.Info(string(body))
+		logger.Info(string(respBody))
 		return errors.New("an error occurred while creating trial account, please try again")
 	}
 
