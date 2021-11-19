@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
@@ -21,6 +22,7 @@ func init() {
 
 	bannerBytes, _ := ioutil.ReadFile("banner.txt")
 	banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
+	fmt.Println()
 }
 
 func main() {

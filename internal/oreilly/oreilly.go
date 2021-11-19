@@ -37,7 +37,6 @@ func Generate(opts *options.OreillyTrialOptions) error {
 	// generate random username and password
 	username = random.GenerateUsername(opts.RandomLength)
 	password = random.GeneratePassword(opts.RandomLength)
-	logger.Info("")
 	logger.Info("random credentials generated", zap.String("username", username), zap.String("password", password))
 
 	// generate random email address from usable domains
@@ -92,8 +91,7 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		logger.Info("trial account successfully created", zap.String("email", emailAddr),
 			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
-		logger.Info(string(respBody))
-		return errors.New("an error occurred while creating trial account, please try again")
+		return errors.New(string(respBody))
 	}
 
 	return nil
