@@ -7,17 +7,18 @@ import (
 
 // TestGenerate function tests if Generate function running properly
 func TestGenerate(t *testing.T) {
+	url := "https://learning.oreilly.com/api/v1/registration/individual/"
 	cases := []struct {
 		caseName string
 		oto      options.OreillyTrialOptions
 	}{
 		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl: "https://learning.oreilly.com/api/v1/registration/individual/",
+			CreateUserUrl: url,
 			EmailDomains:  []string{"jentrix.com"},
 			RandomLength:  12,
 		}},
 		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl: "https://learning.oreilly.com/api/v1/registration/individual/",
+			CreateUserUrl: url,
 			EmailDomains:  []string{"geekale.com", "64ge.com"},
 			RandomLength:  16,
 		}},
