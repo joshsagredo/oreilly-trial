@@ -11,12 +11,40 @@ import (
 
 var url = "https://learning.oreilly.com/api/v1/registration/individual/"
 
+// this is over real API
 // TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
 func TestGenerateBrokenEmail(t *testing.T) {
 	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl: url,
 		EmailDomains:  []string{"hasan"},
+		RandomLength:  12,
+	}
+
+	if err := Generate(&oto); err != nil && err.Error() != expectedError {
+		t.Fatalf("expected error should be: %v, got: %v", expectedError, err.Error())
+	}
+}
+
+// this is over fake API
+// TestGenerateBadRequestResponse function spins up a fake httpserver and simulates a 400 bad request response
+func TestGenerateBadRequestResponse(t *testing.T) {
+	// Start a local HTTP server
+	expectedError := "400 - bad request"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+		if _, err := fmt.Fprint(w, expectedError); err != nil {
+			t.Fatalf("a fatal error occured while writing response body: %s", err.Error())
+		}
+	}))
+
+	defer func() {
+		server.Close()
+	}()
+
+	oto := options.OreillyTrialOptions{
+		CreateUserUrl: server.URL,
+		EmailDomains:  []string{"jentrix.com"},
 		RandomLength:  12,
 	}
 
@@ -66,31 +94,5 @@ func TestGenerateValidArgs(t *testing.T) {
 			t.Logf("trial account successfully created!")
 			t.Logf("%v\n", tc.oto)
 		})
-	}
-}
-
-func TestGenerateBrokenJsonResponse(t *testing.T) {
-	expectedResponse := "{\"foo\": \"bar\""
-	expectedError := "unexpected end of JSON input"
-	// Start a local HTTP server
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := fmt.Fprintln(w, expectedResponse)
-		if err != nil {
-			t.Fatalf("a fatal error occured while writing response body: %s", err.Error())
-		}
-	}))
-
-	defer func() {
-		server.Close()
-	}()
-
-	oto := options.OreillyTrialOptions{
-		CreateUserUrl: server.URL,
-		EmailDomains:  []string{"jentrix.com"},
-		RandomLength:  12,
-	}
-
-	if err := Generate(&oto); err != nil && err.Error() != expectedError {
-		t.Fatalf("expected error should be: %v, got: %v", err.Error(), err.Error())
 	}
 }
