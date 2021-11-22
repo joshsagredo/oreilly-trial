@@ -1,7 +1,11 @@
 package oreilly
 
 import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"oreilly-trial/internal/options"
+	"strings"
 	"testing"
 )
 
@@ -22,7 +26,7 @@ func TestGenerateBrokenEmail(t *testing.T) {
 }
 
 func TestGenerateBrokenAPIUrl(t *testing.T) {
-	expectedError := "Post \"https://foo.example.com/\": dial tcp: lookup foo.example.com: no such host"
+	expectedError := "no such host"
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl: url,
@@ -30,8 +34,8 @@ func TestGenerateBrokenAPIUrl(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	if err := Generate(&oto); err != nil && err.Error() != expectedError {
-		t.Fatalf("expected error should be: %v, got: %v", expectedError, err.Error())
+	if err := Generate(&oto); err != nil && !strings.Contains(err.Error(), expectedError) {
+		t.Fatalf("expected error should contain: %v, got: %v", expectedError, err.Error())
 	}
 }
 
@@ -62,5 +66,31 @@ func TestGenerateValidArgs(t *testing.T) {
 			t.Logf("trial account successfully created!")
 			t.Logf("%v\n", tc.oto)
 		})
+	}
+}
+
+func TestGenerateBrokenJsonResponse(t *testing.T) {
+	expectedResponse := "{\"foo\": \"bar\""
+	expectedError := "unexpected end of JSON input"
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := fmt.Fprintln(w, expectedResponse)
+		if err != nil {
+			t.Fatalf("a fatal error occured while writing response body: %s", err.Error())
+		}
+	}))
+
+	defer func() {
+		server.Close()
+	}()
+
+	oto := options.OreillyTrialOptions{
+		CreateUserUrl: server.URL,
+		EmailDomains:  []string{"jentrix.com"},
+		RandomLength:  12,
+	}
+
+	if err := Generate(&oto); err != nil && err.Error() != expectedError {
+		t.Fatalf("expected error should be: %v, got: %v", err.Error(), err.Error())
 	}
 }
