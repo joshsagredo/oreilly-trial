@@ -21,6 +21,20 @@ func TestGenerateBrokenEmail(t *testing.T) {
 	}
 }
 
+func TestGenerateBrokenAPIUrl(t *testing.T) {
+	expectedError := "Post \"https://foo.example.com/\": dial tcp: lookup foo.example.com: no such host"
+	url := "https://foo.example.com/"
+	oto := options.OreillyTrialOptions{
+		CreateUserUrl: url,
+		EmailDomains:  []string{"jentrix.com"},
+		RandomLength:  12,
+	}
+
+	if err := Generate(&oto); err != nil && err.Error() != expectedError {
+		t.Fatalf("expected error should be: %v, got: %v", expectedError, err.Error())
+	}
+}
+
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
 func TestGenerateValidArgs(t *testing.T) {
 	cases := []struct {
