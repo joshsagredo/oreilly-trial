@@ -12,12 +12,19 @@ import (
 
 var url = "https://learning.oreilly.com/api/v1/registration/individual/"
 
-// this is over real API
 // TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
-func TestGenerateBrokenEmail(t *testing.T) {
+func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
 	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
+	mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(400)
+		if _, err := fmt.Fprint(writer, expectedError); err != nil {
+			t.Fatalf("a fatal error occured while writing response body: %s", err.Error())
+		}
+	}))
+	defer mockServer.Close()
+
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl: url,
+		CreateUserUrl: mockServer.URL,
 		EmailDomains:  []string{"hasan"},
 		RandomLength:  12,
 	}
@@ -27,9 +34,8 @@ func TestGenerateBrokenEmail(t *testing.T) {
 	assert.Equal(t, expectedError, err.Error())
 }
 
-// this is over fake API
-// TestGenerateBadRequestResponse function spins up a fake httpserver and simulates a 400 bad request response
-func TestGenerateBadRequestResponse(t *testing.T) {
+// TestGenerate_ShouldReturnError function spins up a fake httpserver and simulates a 400 bad request response
+func TestGenerate_ShouldReturnError(t *testing.T) {
 	// Start a local HTTP server
 	expectedError := "400 - bad request"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +60,7 @@ func TestGenerateBadRequestResponse(t *testing.T) {
 	assert.Contains(t, err.Error(), expectedError)
 }
 
-func TestGenerateBrokenAPIUrl(t *testing.T) {
+func TestGenerate_WhenInvalidHost_ShouldReturnError(t *testing.T) {
 	expectedError := "no such host"
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
