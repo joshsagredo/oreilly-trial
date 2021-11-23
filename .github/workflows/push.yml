@@ -100,9 +100,28 @@ jobs:
       - name: Coverage Upload
         run: bash <(curl -s https://codecov.io/bash)
 
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - vet
+      - ineffassign
+      - test
+      - codeql
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   build:
     needs:
       - coverage
+      - sonarcloud
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
