@@ -10,7 +10,10 @@ import (
 	"testing"
 )
 
-var url = "https://learning.oreilly.com/api/v1/registration/individual/"
+var (
+	url = "https://learning.oreilly.com/api/v1/registration/individual/"
+	domains = []string{"jentrix.com"}
+)
 
 // TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
 func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
@@ -51,7 +54,7 @@ func TestGenerate_ShouldReturnError(t *testing.T) {
 
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl: server.URL,
-		EmailDomains:  []string{"jentrix.com"},
+		EmailDomains:  domains,
 		RandomLength:  12,
 	}
 
@@ -65,7 +68,7 @@ func TestGenerate_WhenInvalidHost_ShouldReturnError(t *testing.T) {
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl: url,
-		EmailDomains:  []string{"jentrix.com"},
+		EmailDomains:  domains,
 		RandomLength:  12,
 	}
 
@@ -82,12 +85,12 @@ func TestGenerateValidArgs(t *testing.T) {
 	}{
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl: url,
-			EmailDomains:  []string{"jentrix.com"},
+			EmailDomains:  domains,
 			RandomLength:  12,
 		}},
 		{"case2", options.OreillyTrialOptions{
 			CreateUserUrl: url,
-			EmailDomains:  []string{"geekale.com", "64ge.com"},
+			EmailDomains:  domains,
 			RandomLength:  16,
 		}},
 	}

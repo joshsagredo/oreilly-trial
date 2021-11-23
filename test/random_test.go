@@ -21,7 +21,6 @@ func TestGenerateUsername(t *testing.T) {
 			username := random.GenerateUsername(tc.randomLength)
 			assert.NotEmpty(t, username)
 			assert.Len(t, username, tc.randomLength)
-			t.Logf("username generated. case=%s, username=%s\n", tc.caseName, username)
 		})
 	}
 }
@@ -41,7 +40,6 @@ func TestGeneratePassword(t *testing.T) {
 			password := random.GeneratePassword(tc.randomLength)
 			assert.NotEmpty(t, password)
 			assert.Len(t, password, tc.randomLength)
-			t.Logf("password generated. case=%s, password=%s\n", tc.caseName, password)
 		})
 	}
 }
