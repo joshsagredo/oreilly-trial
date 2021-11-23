@@ -1,11 +1,12 @@
-package oreilly
+package test
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"oreilly-trial/internal/options"
-	"strings"
+	"oreilly-trial/internal/oreilly"
 	"testing"
 )
 
@@ -21,9 +22,9 @@ func TestGenerateBrokenEmail(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	if err := Generate(&oto); err != nil && err.Error() != expectedError {
-		t.Fatalf("expected error should be: %v, got: %v", expectedError, err.Error())
-	}
+	err := oreilly.Generate(&oto)
+	assert.NotNil(t, err)
+	assert.Equal(t, expectedError, err.Error())
 }
 
 // this is over fake API
@@ -48,9 +49,9 @@ func TestGenerateBadRequestResponse(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	if err := Generate(&oto); err != nil && err.Error() != expectedError {
-		t.Fatalf("expected error should be: %v, got: %v", expectedError, err.Error())
-	}
+	err := oreilly.Generate(&oto)
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), expectedError)
 }
 
 func TestGenerateBrokenAPIUrl(t *testing.T) {
@@ -62,9 +63,9 @@ func TestGenerateBrokenAPIUrl(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	if err := Generate(&oto); err != nil && !strings.Contains(err.Error(), expectedError) {
-		t.Fatalf("expected error should contain: %v, got: %v", expectedError, err.Error())
-	}
+	err := oreilly.Generate(&oto)
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), expectedError)
 }
 
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
@@ -87,12 +88,8 @@ func TestGenerateValidArgs(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			if err := Generate(&tc.oto); err != nil {
-				t.Fatalf("expected error should be: nil, got: %v", err.Error())
-			}
-
-			t.Logf("trial account successfully created!")
-			t.Logf("%v\n", tc.oto)
+			err := oreilly.Generate(&tc.oto)
+			assert.Nil(t, err)
 		})
 	}
 }

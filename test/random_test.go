@@ -1,6 +1,8 @@
-package random
+package test
 
 import (
+	"github.com/stretchr/testify/assert"
+	"oreilly-trial/internal/random"
 	"testing"
 )
 
@@ -16,7 +18,9 @@ func TestGenerateUsername(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			username := GenerateUsername(tc.randomLength)
+			username := random.GenerateUsername(tc.randomLength)
+			assert.NotEmpty(t, username)
+			assert.Len(t, username, tc.randomLength)
 			t.Logf("username generated. case=%s, username=%s\n", tc.caseName, username)
 		})
 	}
@@ -34,7 +38,9 @@ func TestGeneratePassword(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			password := GeneratePassword(tc.randomLength)
+			password := random.GeneratePassword(tc.randomLength)
+			assert.NotEmpty(t, password)
+			assert.Len(t, password, tc.randomLength)
 			t.Logf("password generated. case=%s, password=%s\n", tc.caseName, password)
 		})
 	}
@@ -53,8 +59,9 @@ func TestPickEmail(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
 			t.Logf("picking random email domain for case=%s\n", tc.caseName)
-			domain := PickEmail(tc.emailDomains)
-			t.Logf("random email domain selected. case=%s, domain=%s\n", tc.caseName, domain)
+			domain := random.PickEmail(tc.emailDomains)
+			assert.NotNil(t, domain)
+			assert.NotEmpty(t, domain)
 		})
 	}
 }
