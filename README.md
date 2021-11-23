@@ -2,6 +2,7 @@
 [![CI](https://github.com/bilalcaliskan/oreilly-trial/workflows/CI/badge.svg?event=push)](https://github.com/bilalcaliskan/oreilly-trial/actions?query=workflow%3ACI)
 [![Docker pulls](https://img.shields.io/docker/pulls/bilalcaliskan/oreilly-trial)](https://hub.docker.com/r/bilalcaliskan/oreilly-trial/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/bilalcaliskan/oreilly-trial)](https://goreportcard.com/report/github.com/bilalcaliskan/oreilly-trial)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bilalcaliskan_oreilly-trial&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bilalcaliskan_oreilly-trial)
 [![codecov](https://codecov.io/gh/bilalcaliskan/oreilly-trial/branch/master/graph/badge.svg)](https://codecov.io/gh/bilalcaliskan/oreilly-trial)
 [![Release](https://img.shields.io/github/release/bilalcaliskan/oreilly-trial.svg)](https://github.com/bilalcaliskan/oreilly-trial/releases/latest)
 [![Go version](https://img.shields.io/github/go-mod/go-version/bilalcaliskan/oreilly-trial)](https://github.com/bilalcaliskan/oreilly-trial)
