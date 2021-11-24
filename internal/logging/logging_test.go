@@ -1,7 +1,6 @@
-package test
+package logging
 
 import (
-	"oreilly-trial/internal/logging"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -9,7 +8,7 @@ import (
 // TestGetLogger function tests if GetLogger function running properly
 func TestGetLogger(t *testing.T) {
 	t.Log("getting logger")
-	logger := logging.GetLogger()
+	logger := GetLogger()
 	assert.NotNil(t, logger)
 	t.Log("will try logger for debugging")
 	logger.Info("this is a test log by *zap.Logger!")

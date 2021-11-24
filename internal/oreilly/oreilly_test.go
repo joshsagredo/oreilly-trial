@@ -1,4 +1,4 @@
-package test
+package oreilly
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"oreilly-trial/internal/options"
-	"oreilly-trial/internal/oreilly"
 	"testing"
 )
 
@@ -32,7 +31,7 @@ func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	err := oreilly.Generate(&oto)
+	err := Generate(&oto)
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err.Error())
 }
@@ -58,7 +57,7 @@ func TestGenerate_ShouldReturnError(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	err := oreilly.Generate(&oto)
+	err := Generate(&oto)
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
 }
@@ -72,7 +71,7 @@ func TestGenerate_WhenInvalidHost_ShouldReturnError(t *testing.T) {
 		RandomLength:  12,
 	}
 
-	err := oreilly.Generate(&oto)
+	err := Generate(&oto)
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
 }
@@ -97,7 +96,7 @@ func TestGenerateValidArgs(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			err := oreilly.Generate(&tc.oto)
+			err := Generate(&tc.oto)
 			assert.Nil(t, err)
 		})
 	}
