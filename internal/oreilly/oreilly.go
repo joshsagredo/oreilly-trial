@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"go.uber.org/zap"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"oreilly-trial/internal/logging"
@@ -66,16 +67,18 @@ func Generate(opts *options.OreillyTrialOptions) error {
 	if req, err = http.NewRequest("POST", opts.CreateUserUrl, bytes.NewBuffer(jsonData)); err != nil {
 		return err
 	}
+
 	setRequestHeaders(req)
 	if resp, err = client.Do(req); err != nil {
 		return err
 	}
 
-	defer func() {
-		if err = resp.Body.Close(); err != nil {
+	defer func(body io.ReadCloser) {
+		err := body.Close()
+		if err != nil {
 			panic(err)
 		}
-	}()
+	}(resp.Body)
 
 	// read the response
 	if respBody, err = ioutil.ReadAll(resp.Body); err != nil {
