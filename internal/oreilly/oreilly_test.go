@@ -10,11 +10,11 @@ import (
 )
 
 var (
-	url = "https://learning.oreilly.com/api/v1/registration/individual/"
+	url     = "https://learning.oreilly.com/api/v1/registration/individual/"
 	domains = []string{"jentrix.com"}
 )
 
-// TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
+// TestGenerate_WhenBrokenEmail_ShouldReturnError function tests if Generate function fails with broken arguments and returns desired error
 func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
 	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -62,6 +62,7 @@ func TestGenerate_ShouldReturnError(t *testing.T) {
 	assert.Contains(t, err.Error(), expectedError)
 }
 
+// TestGenerate_WhenInvalidHost_ShouldReturnError function tests if Generate function fails on broken Host argument
 func TestGenerate_WhenInvalidHost_ShouldReturnError(t *testing.T) {
 	expectedError := "no such host"
 	url := "https://foo.example.com/"
