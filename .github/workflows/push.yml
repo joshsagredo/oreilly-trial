@@ -126,8 +126,11 @@ jobs:
 
   build:
     needs:
-      - coverage
-      - sonarcloud
+      - lint
+      - vet
+      - ineffassign
+      - test
+      - codeql
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -145,6 +148,8 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     needs:
+      - coverage
+      - sonarcloud
       - build
     steps:
       - name: Checkout

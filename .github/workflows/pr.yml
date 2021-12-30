@@ -98,13 +98,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    needs:
-      - lint
-      - vet
-      - ineffassign
-      - test
-      - codeql
-      - sonarcloud
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
