@@ -2,11 +2,6 @@ package options
 
 var oreillyTrialOptions = &OreillyTrialOptions{}
 
-// GetOreillyTrialOptions returns the pointer of OreillyTrialOptions
-func GetOreillyTrialOptions() *OreillyTrialOptions {
-	return oreillyTrialOptions
-}
-
 // OreillyTrialOptions contains frequent command line and application options.
 type OreillyTrialOptions struct {
 	// CreateUserUrl is the url of the user creation on Oreilly API
@@ -15,4 +10,9 @@ type OreillyTrialOptions struct {
 	EmailDomains []string
 	// RandomLength is the length of the random generated username and password
 	RandomLength int
+}
+
+// GetOreillyTrialOptions returns the pointer of OreillyTrialOptions
+func GetOreillyTrialOptions() *OreillyTrialOptions {
+	return oreillyTrialOptions
 }

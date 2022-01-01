@@ -17,4 +17,4 @@ builds:
       - amd64
     ldflags:
       - -s -w
-    main: ./cmd/oreilly-trial/main.go
+    main: ./oreilly-trial/main.go

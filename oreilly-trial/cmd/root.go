@@ -1,11 +1,8 @@
-/*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
 	"github.com/dimiro1/banner"
+	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"log"
@@ -14,9 +11,19 @@ import (
 	"oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
+
+// init initializes the cmd package
+func init() {
+	opts := options.GetOreillyTrialOptions()
+	rootCmd.PersistentFlags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
+		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
+	rootCmd.PersistentFlags().StringSliceVarP(&opts.EmailDomains, "emailDomains", "",
+		[]string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
+		"comma separated list of usable domain for creating trial account, it should be a valid domain")
+	rootCmd.PersistentFlags().IntVarP(&opts.RandomLength, "randomLength", "", 16,
+		"length of the random generated username and password")
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -37,22 +44,11 @@ This tool does couple of simple steps to provide free trial account for you`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	bannerBytes, _ := ioutil.ReadFile("banner.txt")
+	banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func init() {
-	bannerBytes, _ := ioutil.ReadFile("banner.txt")
-	banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
-
-	opts := options.GetOreillyTrialOptions()
-	rootCmd.PersistentFlags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
-		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
-	rootCmd.PersistentFlags().StringSliceVarP(&opts.EmailDomains, "emailDomains", "",
-		[]string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
-		"comma separated list of usable domain for creating trial account, it should be a valid domain")
-	rootCmd.PersistentFlags().IntVarP(&opts.RandomLength, "randomLength", "", 16,
-		"length of the random generated username and password")
 }
