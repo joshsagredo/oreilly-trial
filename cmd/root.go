@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"io/ioutil"
-	"log"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/oreilly"
@@ -33,7 +32,6 @@ var rootCmd = &cobra.Command{
 This tool does couple of simple steps to provide free trial account for you`,
 	Run: func(cmd *cobra.Command, args []string) {
 		opts := options.GetOreillyTrialOptions()
-		log.Println(opts)
 
 		if err := oreilly.Generate(opts); err != nil {
 			logging.GetLogger().Fatal("an error occurred while generating user", zap.String("error", err.Error()))
