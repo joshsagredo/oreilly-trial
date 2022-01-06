@@ -1,0 +1,5 @@
+---
+
+ignore:
+  - cmd/**/*
+  - main.go
