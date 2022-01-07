@@ -5,40 +5,25 @@ import (
 	"testing"
 )
 
-// TestGenerateUsername function tests if GenerateUsername function running properly
-func TestGenerateUsername(t *testing.T) {
+// TestGenerate function tests if Generate function running properly
+func TestGenerate(t *testing.T) {
 	cases := []struct {
 		caseName     string
 		randomLength int
+		outputType   string
 	}{
-		{"random10", 10},
-		{"random20", 20},
+		{"random10username", 10, TypeUsername},
+		{"random20username", 20, TypeUsername},
+		{"random10password", 10, TypePassword},
+		{"random20password", 20, TypePassword},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			username := GenerateUsername(tc.randomLength)
+			username, err := Generate(tc.randomLength, tc.outputType)
+			assert.Nil(t, err)
 			assert.NotEmpty(t, username)
 			assert.Len(t, username, tc.randomLength)
-		})
-	}
-}
-
-// TestGeneratePassword function tests if GeneratePassword function running properly
-func TestGeneratePassword(t *testing.T) {
-	cases := []struct {
-		caseName     string
-		randomLength int
-	}{
-		{"random10", 10},
-		{"random20", 20},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.caseName, func(t *testing.T) {
-			password := GeneratePassword(tc.randomLength)
-			assert.NotEmpty(t, password)
-			assert.Len(t, password, tc.randomLength)
 		})
 	}
 }

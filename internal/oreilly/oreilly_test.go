@@ -14,8 +14,8 @@ var (
 	domains = []string{"jentrix.com"}
 )
 
-// TestGenerate_WhenBrokenEmail_ShouldReturnError function tests if Generate function fails with broken arguments and returns desired error
-func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
+// TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
+func TestGenerateBrokenEmail(t *testing.T) {
 	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(400)
@@ -36,8 +36,8 @@ func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
 	assert.Equal(t, expectedError, err.Error())
 }
 
-// TestGenerate_ShouldReturnError function spins up a fake httpserver and simulates a 400 bad request response
-func TestGenerate_ShouldReturnError(t *testing.T) {
+// TestGenerateError function spins up a fake httpserver and simulates a 400 bad request response
+func TestGenerateError(t *testing.T) {
 	// Start a local HTTP server
 	expectedError := "400 - bad request"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -62,8 +62,8 @@ func TestGenerate_ShouldReturnError(t *testing.T) {
 	assert.Contains(t, err.Error(), expectedError)
 }
 
-// TestGenerate_WhenInvalidHost_ShouldReturnError function tests if Generate function fails on broken Host argument
-func TestGenerate_WhenInvalidHost_ShouldReturnError(t *testing.T) {
+// TestGenerateInvalidHost function tests if Generate function fails on broken Host argument
+func TestGenerateInvalidHost(t *testing.T) {
 	expectedError := "no such host"
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{

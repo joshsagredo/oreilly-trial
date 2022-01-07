@@ -1,46 +1,72 @@
 package random
 
 import (
-	"math/rand"
-	"strings"
-	"time"
+	"crypto/rand"
+	"math/big"
+	mathRand "math/rand"
 )
 
-var (
-	chars    = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789")
-	digits   = "0123456789"
-	specials = "=+*/!@#$?"
-	all      = string(chars) + digits + specials
+const (
+	Chars        = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789"
+	Digits       = "0123456789"
+	Specials     = "=+*/!@#$?"
+	All          = Chars + Digits + Specials
+	TypeUsername = "TYPE_USERNAME"
+	TypePassword = "TYPE_PASSWORD"
 )
 
-// GenerateUsername generates a random string of numbers and characters
-func GenerateUsername(length int) string {
-	rand.Seed(time.Now().UnixNano())
+/*// GenerateUsername generates a random string of numbers and characters
+func GenerateUsername(length int) (string, error) {
+	/*rand.Seed(time.Now().UnixNano())
 	var b strings.Builder
 	for i := 0; i < length; i++ {
 		b.WriteRune(chars[rand.Intn(len(chars))])
 	}
 	return b.String()
-}
 
-// GeneratePassword generates a random ASCII string with at least one digit and one special character.
-func GeneratePassword(length int) string {
-	rand.Seed(time.Now().UnixNano())
-	buf := make([]byte, length)
-	buf[0] = digits[rand.Intn(len(digits))]
-	buf[1] = specials[rand.Intn(len(specials))]
-	for i := 2; i < length; i++ {
-		buf[i] = all[rand.Intn(len(all))]
+
+}*/
+
+// Generate generates a random string for username or password
+func Generate(length int, outputType string) (string, error) {
+	var sourceChars string
+
+	switch outputType {
+	case TypeUsername:
+		sourceChars = Chars
+	case TypePassword:
+		sourceChars = All
 	}
 
-	rand.Shuffle(len(buf), func(i, j int) {
-		buf[i], buf[j] = buf[j], buf[i]
-	})
+	res := make([]byte, length)
+	for i := 0; i < length; i++ {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(sourceChars))))
+		if err != nil {
+			return "", err
+		}
 
-	return string(buf)
+		res[i] = sourceChars[num.Int64()]
+	}
+
+	return string(res), nil
 }
+
+/*// GeneratePassword generates a random ASCII string with at least one digit and one special character.
+func GeneratePassword(length int) (string, error) {
+	ret := make([]byte, length)
+	for i := 0; i < length; i++ {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(All))))
+		if err != nil {
+			return "", err
+		}
+
+		ret[i] = All[num.Int64()]
+	}
+
+	return string(ret), nil
+}*/
 
 // PickEmail picks a random item from emailDomains slice
 func PickEmail(emailDomains []string) string {
-	return emailDomains[rand.Intn(len(emailDomains))]
+	return emailDomains[mathRand.Intn(len(emailDomains))]
 }
