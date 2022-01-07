@@ -36,11 +36,11 @@ func Generate(opts *options.OreillyTrialOptions) error {
 	)
 
 	// generate random username and password
-	if username, err = random.Generate(opts.RandomLength, random.TypeUsername); err != nil {
+	if username, err = random.Generate(opts.UsernameRandomLength, random.TypeUsername); err != nil {
 		return err
 	}
 
-	if password, err = random.Generate(opts.RandomLength, random.TypePassword); err != nil {
+	if password, err = random.Generate(opts.PasswordRandomLength, random.TypePassword); err != nil {
 		return err
 	}
 

@@ -26,9 +26,10 @@ func TestGenerateBrokenEmail(t *testing.T) {
 	defer mockServer.Close()
 
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl: mockServer.URL,
-		EmailDomains:  []string{"hasan"},
-		RandomLength:  12,
+		CreateUserUrl:        mockServer.URL,
+		EmailDomains:         []string{"hasan"},
+		UsernameRandomLength: 12,
+		PasswordRandomLength: 12,
 	}
 
 	err := Generate(&oto)
@@ -52,9 +53,10 @@ func TestGenerateError(t *testing.T) {
 	}()
 
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl: server.URL,
-		EmailDomains:  domains,
-		RandomLength:  12,
+		CreateUserUrl:        server.URL,
+		EmailDomains:         domains,
+		UsernameRandomLength: 12,
+		PasswordRandomLength: 12,
 	}
 
 	err := Generate(&oto)
@@ -67,14 +69,42 @@ func TestGenerateInvalidHost(t *testing.T) {
 	expectedError := "no such host"
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl: url,
-		EmailDomains:  domains,
-		RandomLength:  12,
+		CreateUserUrl:        url,
+		EmailDomains:         domains,
+		UsernameRandomLength: 12,
+		PasswordRandomLength: 12,
 	}
 
 	err := Generate(&oto)
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
+}
+
+func TestGenerateInvalidRandom(t *testing.T) {
+	cases := []struct {
+		caseName string
+		oto      options.OreillyTrialOptions
+	}{
+		{"case1", options.OreillyTrialOptions{
+			CreateUserUrl:        url,
+			EmailDomains:         domains,
+			UsernameRandomLength: 64,
+			PasswordRandomLength: 12,
+		}},
+		{"case2", options.OreillyTrialOptions{
+			CreateUserUrl:        url,
+			EmailDomains:         domains,
+			UsernameRandomLength: 12,
+			PasswordRandomLength: 665,
+		}},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.caseName, func(t *testing.T) {
+			err := Generate(&tc.oto)
+			assert.NotNil(t, err)
+		})
+	}
 }
 
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
@@ -84,14 +114,16 @@ func TestGenerateValidArgs(t *testing.T) {
 		oto      options.OreillyTrialOptions
 	}{
 		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl: url,
-			EmailDomains:  domains,
-			RandomLength:  12,
+			CreateUserUrl:        url,
+			EmailDomains:         domains,
+			UsernameRandomLength: 12,
+			PasswordRandomLength: 12,
 		}},
 		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl: url,
-			EmailDomains:  domains,
-			RandomLength:  16,
+			CreateUserUrl:        url,
+			EmailDomains:         domains,
+			UsernameRandomLength: 16,
+			PasswordRandomLength: 16,
 		}},
 	}
 
