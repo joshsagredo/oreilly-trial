@@ -28,6 +28,25 @@ func TestGenerate(t *testing.T) {
 	}
 }
 
+func TestGenerateInvalidLength(t *testing.T) {
+	cases := []struct {
+		caseName     string
+		randomLength int
+		outputType   string
+	}{
+		{"random64username", 64, TypeUsername},
+		{"random64password", 64, TypePassword},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.caseName, func(t *testing.T) {
+			res, err := Generate(tc.randomLength, tc.outputType)
+			assert.NotNil(t, err)
+			assert.Empty(t, res)
+		})
+	}
+}
+
 // TestPickEmail tests if PickEmail function is running properly
 func TestPickEmail(t *testing.T) {
 	cases := []struct {
