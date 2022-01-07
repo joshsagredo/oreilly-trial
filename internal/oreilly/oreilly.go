@@ -36,14 +36,8 @@ func Generate(opts *options.OreillyTrialOptions) error {
 	)
 
 	// generate random username and password
-	if username, err = random.Generate(opts.UsernameRandomLength, random.TypeUsername); err != nil {
-		return err
-	}
-
-	if password, err = random.Generate(opts.PasswordRandomLength, random.TypePassword); err != nil {
-		return err
-	}
-
+	username = random.GenerateUsername(opts.RandomLength)
+	password = random.GeneratePassword(opts.RandomLength)
 	logger.Info("random credentials generated", zap.String("username", username), zap.String("password", password))
 
 	// generate random email address from usable domains

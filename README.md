@@ -18,11 +18,10 @@ This tool does couple of simple steps to provide free trial account for you:
 ## Configuration
 oreilly-trial can be customized with several command line arguments:
 ```
---createUserUrl             string      url of the user creation on Oreilly API (default "https://learning.oreilly.com/api/v1/registration/individual/")
---emailDomains              strings     comma separated list of usable domain for creating trial account, it should be a valid domain (default [jentrix.com,geekale.com,64ge.com,frnla.com])
---usernameRandomLength      int         length of the random generated username between 0 and 32 (default 16)
---passwordRandomLength      int         length of the random generated password between 0 and 32 (default 16)
---help, -h                              help for oreilly-trial
+--createUserUrl     string      url of the user creation on Oreilly API (default "https://learning.oreilly.com/api/v1/registration/individual/")
+--emailDomains      strings     comma separated list of usable domain for creating trial account, it should be a valid domain (default [jentrix.com,geekale.com,64ge.com,frnla.com])
+--randomLength      int         length of the random generated username and password (default 16)
+--help, -h                      help for oreilly-trial
 ```
 
 > If you need more usable domains for email randomization, please check https://temp-mail.org/
@@ -34,7 +33,7 @@ Binary can be downloaded from [Releases](https://github.com/bilalcaliskan/oreill
 
 After then, you can simply run binary by providing required command line arguments:
 ```shell
-$ ./oreilly-trial --usernameRandomLength 12 --emailDomains jentrix.com,geekale.com
+$ ./oreilly-trial --randomLength 12 --emailDomains jentrix.com,geekale.com
 ```
 
 ### Docker
