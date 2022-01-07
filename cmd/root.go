@@ -20,10 +20,8 @@ func init() {
 	rootCmd.PersistentFlags().StringSliceVarP(&opts.EmailDomains, "emailDomains", "",
 		[]string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
 		"comma separated list of usable domain for creating trial account, it should be a valid domain")
-	rootCmd.PersistentFlags().IntVarP(&opts.UsernameRandomLength, "usernameRandomLength", "", 16,
-		"length of the random generated username between 0 and 32")
-	rootCmd.PersistentFlags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
-		"length of the random generated password between 0 and 32")
+	rootCmd.PersistentFlags().IntVarP(&opts.RandomLength, "randomLength", "", 16,
+		"length of the random generated username and password")
 }
 
 // rootCmd represents the base command when called without any subcommands

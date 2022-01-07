@@ -8,10 +8,8 @@ type OreillyTrialOptions struct {
 	CreateUserUrl string
 	// EmailDomains is the comma separated list of usable domain for creating trial account, it should be a valid domain
 	EmailDomains []string
-	// UsernameRandomLength is the length of the random generated username
-	UsernameRandomLength int
-	// PasswordRandomLength is the length of the random generated username
-	PasswordRandomLength int
+	// RandomLength is the length of the random generated username and password
+	RandomLength int
 }
 
 // GetOreillyTrialOptions returns the pointer of OreillyTrialOptions

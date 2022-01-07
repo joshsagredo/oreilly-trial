@@ -5,23 +5,19 @@ import (
 	"testing"
 )
 
-// TestGenerate function tests if Generate function running properly
-func TestGenerate(t *testing.T) {
+// TestGenerateUsername function tests if GenerateUsername function running properly
+func TestGenerateUsername(t *testing.T) {
 	cases := []struct {
 		caseName     string
 		randomLength int
-		outputType   string
 	}{
-		{"random10username", 10, TypeUsername},
-		{"random20username", 20, TypeUsername},
-		{"random10password", 10, TypePassword},
-		{"random20password", 20, TypePassword},
+		{"random10", 10},
+		{"random20", 20},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			username, err := Generate(tc.randomLength, tc.outputType)
-			assert.Nil(t, err)
+			username := GenerateUsername(tc.randomLength)
 			assert.NotEmpty(t, username)
 			assert.Len(t, username, tc.randomLength)
 		})
