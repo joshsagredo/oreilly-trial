@@ -14,8 +14,8 @@ var (
 	domains = []string{"jentrix.com"}
 )
 
-// TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
-func TestGenerateBrokenEmail(t *testing.T) {
+// TestGenerate_WhenBrokenEmail_ShouldReturnError function tests if Generate function fails with broken arguments and returns desired error
+func TestGenerate_WhenBrokenEmail_ShouldReturnError(t *testing.T) {
 	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(400)
@@ -26,10 +26,9 @@ func TestGenerateBrokenEmail(t *testing.T) {
 	defer mockServer.Close()
 
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        mockServer.URL,
-		EmailDomains:         []string{"hasan"},
-		UsernameRandomLength: 12,
-		PasswordRandomLength: 12,
+		CreateUserUrl: mockServer.URL,
+		EmailDomains:  []string{"hasan"},
+		RandomLength:  12,
 	}
 
 	err := Generate(&oto)
@@ -37,8 +36,8 @@ func TestGenerateBrokenEmail(t *testing.T) {
 	assert.Equal(t, expectedError, err.Error())
 }
 
-// TestGenerateError function spins up a fake httpserver and simulates a 400 bad request response
-func TestGenerateError(t *testing.T) {
+// TestGenerate_ShouldReturnError function spins up a fake httpserver and simulates a 400 bad request response
+func TestGenerate_ShouldReturnError(t *testing.T) {
 	// Start a local HTTP server
 	expectedError := "400 - bad request"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -53,10 +52,9 @@ func TestGenerateError(t *testing.T) {
 	}()
 
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        server.URL,
-		EmailDomains:         domains,
-		UsernameRandomLength: 12,
-		PasswordRandomLength: 12,
+		CreateUserUrl: server.URL,
+		EmailDomains:  domains,
+		RandomLength:  12,
 	}
 
 	err := Generate(&oto)
@@ -64,47 +62,19 @@ func TestGenerateError(t *testing.T) {
 	assert.Contains(t, err.Error(), expectedError)
 }
 
-// TestGenerateInvalidHost function tests if Generate function fails on broken Host argument
-func TestGenerateInvalidHost(t *testing.T) {
+// TestGenerate_WhenInvalidHost_ShouldReturnError function tests if Generate function fails on broken Host argument
+func TestGenerate_WhenInvalidHost_ShouldReturnError(t *testing.T) {
 	expectedError := "no such host"
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        url,
-		EmailDomains:         domains,
-		UsernameRandomLength: 12,
-		PasswordRandomLength: 12,
+		CreateUserUrl: url,
+		EmailDomains:  domains,
+		RandomLength:  12,
 	}
 
 	err := Generate(&oto)
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
-}
-
-func TestGenerateInvalidRandom(t *testing.T) {
-	cases := []struct {
-		caseName string
-		oto      options.OreillyTrialOptions
-	}{
-		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 64,
-			PasswordRandomLength: 12,
-		}},
-		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 12,
-			PasswordRandomLength: 665,
-		}},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.caseName, func(t *testing.T) {
-			err := Generate(&tc.oto)
-			assert.NotNil(t, err)
-		})
-	}
 }
 
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
@@ -114,16 +84,14 @@ func TestGenerateValidArgs(t *testing.T) {
 		oto      options.OreillyTrialOptions
 	}{
 		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 12,
-			PasswordRandomLength: 12,
+			CreateUserUrl: url,
+			EmailDomains:  domains,
+			RandomLength:  12,
 		}},
 		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 16,
-			PasswordRandomLength: 16,
+			CreateUserUrl: url,
+			EmailDomains:  domains,
+			RandomLength:  16,
 		}},
 	}
 
