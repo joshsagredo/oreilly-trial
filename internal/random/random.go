@@ -1,50 +1,46 @@
 package random
 
 import (
-	"crypto/rand"
-	"errors"
-	"math/big"
-	mathRand "math/rand"
+	"math/rand"
+	"strings"
+	"time"
 )
 
-const (
-	Chars        = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789"
-	Digits       = "0123456789"
-	Specials     = "=+*/!@#$?"
-	All          = Chars + Digits + Specials
-	TypeUsername = "TYPE_USERNAME"
-	TypePassword = "TYPE_PASSWORD"
+var (
+	chars    = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789")
+	digits   = "0123456789"
+	specials = "=+*/!@#$?"
+	all      = string(chars) + digits + specials
 )
 
-// Generate generates a random string for username or password
-func Generate(length int, outputType string) (string, error) {
-	var sourceChars string
-
-	switch outputType {
-	case TypeUsername:
-		sourceChars = Chars
-	case TypePassword:
-		sourceChars = All
-	}
-
-	if length > 32 {
-		return "", errors.New("invalid random value")
-	}
-
-	res := make([]byte, length)
+// GenerateUsername generates a random string of numbers and characters
+func GenerateUsername(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	var b strings.Builder
 	for i := 0; i < length; i++ {
-		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(sourceChars))))
-		if err != nil {
-			return "", err
-		}
+		b.WriteRune(chars[rand.Intn(len(chars))])
+	}
+	return b.String()
+}
 
-		res[i] = sourceChars[num.Int64()]
+// GeneratePassword generates a random ASCII string with at least one digit and one special character.
+func GeneratePassword(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	buf := make([]byte, length)
+	buf[0] = digits[rand.Intn(len(digits))]
+	buf[1] = specials[rand.Intn(len(specials))]
+	for i := 2; i < length; i++ {
+		buf[i] = all[rand.Intn(len(all))]
 	}
 
-	return string(res), nil
+	rand.Shuffle(len(buf), func(i, j int) {
+		buf[i], buf[j] = buf[j], buf[i]
+	})
+
+	return string(buf)
 }
 
 // PickEmail picks a random item from emailDomains slice
 func PickEmail(emailDomains []string) string {
-	return emailDomains[mathRand.Intn(len(emailDomains))]
+	return emailDomains[rand.Intn(len(emailDomains))]
 }
