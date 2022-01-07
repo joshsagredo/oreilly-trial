@@ -3,7 +3,6 @@ package random
 import (
 	"math/rand"
 	"strings"
-	"time"
 )
 
 var (
@@ -15,7 +14,6 @@ var (
 
 // GenerateUsername generates a random string of numbers and characters
 func GenerateUsername(length int) string {
-	rand.Seed(time.Now().UnixNano())
 	var b strings.Builder
 	for i := 0; i < length; i++ {
 		b.WriteRune(chars[rand.Intn(len(chars))])
@@ -25,7 +23,6 @@ func GenerateUsername(length int) string {
 
 // GeneratePassword generates a random ASCII string with at least one digit and one special character.
 func GeneratePassword(length int) string {
-	rand.Seed(time.Now().UnixNano())
 	buf := make([]byte, length)
 	buf[0] = digits[rand.Intn(len(digits))]
 	buf[1] = specials[rand.Intn(len(specials))]
