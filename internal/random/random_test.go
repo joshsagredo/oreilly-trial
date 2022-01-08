@@ -47,3 +47,24 @@ func TestPickEmail(t *testing.T) {
 		})
 	}
 }
+
+// TestPickEmail tests if PickEmail function is running properly
+func TestGenerateInvalidLength(t *testing.T) {
+	cases := []struct {
+		caseName     string
+		randomLength int
+		outputType   string
+	}{
+		{"case1", 660, TypeUsername},
+		{"case2", 770, TypeUsername},
+		{"case3", 880, TypePassword},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.caseName, func(t *testing.T) {
+			res, err := Generate(tc.randomLength, tc.outputType)
+			assert.NotNil(t, err)
+			assert.Empty(t, res)
+		})
+	}
+}
