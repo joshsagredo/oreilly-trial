@@ -14,7 +14,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Lint
         run: |
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.42.1
@@ -28,7 +28,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Vet
         run: make vet
 
@@ -40,7 +40,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Lint
         run: make ineffassign
 
@@ -55,7 +55,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Test
         run: make test
 
@@ -87,7 +87,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Coverage Test
         run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
       - name: Coverage Upload
@@ -102,7 +102,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Coverage Test
         run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
       - name: SonarCloud Scan
@@ -120,7 +120,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16.x
+          go-version: 1.17.x
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Test
