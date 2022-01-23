@@ -79,20 +79,6 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
 
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17.x
-      - name: Coverage Test
-        run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
-      - name: Coverage Upload
-        run: bash <(curl -s https://codecov.io/bash)
-
   sonarcloud:
     runs-on: ubuntu-latest
     steps:
