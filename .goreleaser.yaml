@@ -17,6 +17,9 @@ builds:
     ldflags:
       - -s -w
     main: ./main.go
+archives:
+  - replacements:
+      amd64: x86_64
 changelog:
   sort: asc
   filters:
@@ -29,6 +32,7 @@ brews:
       # The token determines the release type (Github/Gitlab).
       owner: bilalcaliskan
       name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     folder: Formula
     # Brew fails from multiple 32-bit arm versions.
     # Specify which version should be used.
