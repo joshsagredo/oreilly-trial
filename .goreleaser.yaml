@@ -4,11 +4,9 @@ env:
   - CGO_ENABLED=0
   - GOFLAGS=-mod=vendor
   - GO111MODULE=auto
-
 before:
   hooks:
     - go mod vendor
-
 builds:
   - id: binary
     goos:
@@ -19,3 +17,22 @@ builds:
     ldflags:
       - -s -w
     main: ./main.go
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+brews:
+  - name: oreilly-trial
+    tap:
+      # The token determines the release type (Github/Gitlab).
+      owner: bilalcaliskan
+      name: homebrew-tap
+    folder: Formula
+    # Brew fails from multiple 32-bit arm versions.
+    # Specify which version should be used.
+    goarm: 6
+    homepage: https://github.com/bilalcaliskan/oreilly-trial
+    license: apache-2.0
+    description: oreilly-trial creates a trial Oreilly account for 10 days
