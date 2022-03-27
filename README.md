@@ -40,6 +40,13 @@ After then, you can simply run binary by providing required command line argumen
 $ ./oreilly-trial --usernameRandomLength 12 --emailDomains jentrix.com,geekale.com
 ```
 
+### Homebrew
+This project can be installed with [Homebrew](https://brew.sh/):
+```
+brew tap bilalcaliskan/tap
+brew install bilalcaliskan/tap/oreilly-trial
+```
+
 ### Docker
 You can simply run docker image with default configuration:
 ```shell
