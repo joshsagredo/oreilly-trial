@@ -1,6 +1,7 @@
 lint:
 	golangci-lint run
 
+
 fmt:
 	go fmt ./...
 
