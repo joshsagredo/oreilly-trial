@@ -14,7 +14,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// init initializes the cmd package
 func init() {
 	opts := options.GetOreillyTrialOptions()
 	rootCmd.PersistentFlags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
