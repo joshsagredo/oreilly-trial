@@ -6,6 +6,7 @@ require (
 	github.com/dimiro1/banner v1.1.0
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.1
+	go.uber.org/automaxprocs v1.5.1
 	go.uber.org/zap v1.21.0
 )
 
@@ -18,6 +19,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/sys v0.0.0-20220325203850-36772127a21f // indirect
+	golang.org/x/sys v0.0.0-20220406163625-3f8b81556e12 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

@@ -1,15 +1,17 @@
 package cmd
 
 import (
-	"github.com/dimiro1/banner"
-	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
+
+	"github.com/dimiro1/banner"
+	"github.com/spf13/cobra"
+	_ "go.uber.org/automaxprocs"
+	"go.uber.org/zap"
 )
 
 // init initializes the cmd package
