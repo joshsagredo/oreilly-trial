@@ -59,5 +59,10 @@ This project requires below tools while developing:
 - [pre-commit](https://pre-commit.com/)
 - [golangci-lint](https://golangci-lint.run/usage/install/) - required by [pre-commit](https://pre-commit.com/)
 
+After you installed [pre-commit](https://pre-commit.com/), simply run below command to prepare your development environment:
+```shell
+$ pre-commit install
+```
+
 ## License
 Apache License 2.0

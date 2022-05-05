@@ -26,6 +26,10 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+      - '^ci:'
+      - '^build:'
+      - '^Merge branch'
+      - '^Merge pull request'
 brews:
   - name: oreilly-trial
     tap:
