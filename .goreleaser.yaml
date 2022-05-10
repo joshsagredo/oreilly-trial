@@ -1,12 +1,17 @@
 ---
 project_name: oreilly-trial
+
 env:
   - CGO_ENABLED=0
   - GOFLAGS=-mod=vendor
   - GO111MODULE=auto
+
 before:
   hooks:
     - go mod vendor
+    - go mod tidy
+    - go mod download
+
 builds:
   - id: binary
     goos:
@@ -14,12 +19,15 @@ builds:
       - darwin
     goarch:
       - amd64
+    binary: oreilly-trial
     ldflags:
-      - -s -w
+      - -s -w -X github.com/bilalcaliskan/oreilly-trial/cmd.GitVersion={{ .Version }} -X github.com/bilalcaliskan/oreilly-trial/cmd.gitCommit={{ .ShortCommit }}  -X github.com/bilalcaliskan/oreilly-trial/cmd.buildDate={{ .CommitDate }}
     main: ./main.go
+
 archives:
   - replacements:
       amd64: x86_64
+
 changelog:
   sort: asc
   filters:
@@ -30,6 +38,26 @@ changelog:
       - '^build:'
       - '^Merge branch'
       - '^Merge pull request'
+
+dockers:
+  - image_templates:
+      - "docker.io/bilalcaliskan/{{ .ProjectName }}:{{ .Version }}"
+      - "docker.io/bilalcaliskan/{{ .ProjectName }}:latest"
+    dockerfile: Dockerfile.goreleaser
+    goos: linux
+    goarch: amd64
+    use: docker
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/bilalcaliskan/oreilly-trial
+      - --label=org.opencontainers.image.source=https://github.com/bilalcaliskan/oreilly-trial
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=Apache
+
 brews:
   - name: oreilly-trial
     tap:
@@ -44,3 +72,10 @@ brews:
     homepage: https://github.com/bilalcaliskan/oreilly-trial
     license: apache-2.0
     description: oreilly-trial creates a trial Oreilly account for 10 days
+
+release:
+  github:
+    owner: bilalcaliskan
+    name: oreilly-trial
+  disable: false
+  draft: true
