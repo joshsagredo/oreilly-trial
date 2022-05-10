@@ -34,7 +34,6 @@ dockers:
   - image_templates:
       - "docker.io/bilalcaliskan/oreilly-trial:{{ .Tag }}"
       - "docker.io/bilalcaliskan/oreilly-trial:latest"
-    dockerfile: '{{ .Env.DOCKERFILE }}'
     goos: linux
     goarch: amd64
     use: docker
