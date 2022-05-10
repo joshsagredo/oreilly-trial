@@ -10,7 +10,6 @@ before:
   hooks:
     - go mod tidy
     - go mod download
-    - ./scripts/completions.sh
 
 builds:
   - id: binary
