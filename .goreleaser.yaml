@@ -77,3 +77,5 @@ release:
   github:
     owner: bilalcaliskan
     name: oreilly-trial
+  disable: false
+  draft: true
