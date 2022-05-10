@@ -30,6 +30,20 @@ changelog:
       - '^build:'
       - '^Merge branch'
       - '^Merge pull request'
+dockers:
+  - image_templates:
+      - "docker.io/bilalcaliskan/oreilly-trial:{{ .Tag }}"
+      - "docker.io/bilalcaliskan/oreilly-trial:latest"
+    dockerfile: '{{ .Env.DOCKERFILE }}'
+    goos: linux
+    goarch: amd64
+    use: docker
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
 brews:
   - name: oreilly-trial
     tap:
