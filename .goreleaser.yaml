@@ -32,17 +32,22 @@ changelog:
       - '^Merge pull request'
 dockers:
   - image_templates:
-      - "docker.io/bilalcaliskan/oreilly-trial:{{ .Tag }}"
-      - "docker.io/bilalcaliskan/oreilly-trial:latest"
+      - "docker.io/bilalcaliskan/{{ .ProjectName }}:{{ .Version }}"
+      - "docker.io/bilalcaliskan/{{ .ProjectName }}:latest"
+    dockerfile: Dockerfile.goreleaser
     goos: linux
     goarch: amd64
     use: docker
     build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/bilalcaliskan/oreilly-trial
+      - --label=org.opencontainers.image.source=https://github.com/bilalcaliskan/oreilly-trial
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=Apache
 brews:
   - name: oreilly-trial
     tap:
