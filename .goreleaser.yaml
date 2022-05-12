@@ -34,7 +34,6 @@ dockers:
     goos: linux
     goarch: amd64
     use: docker
-    skip_push: false
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -50,13 +49,10 @@ dockers:
 brews:
   - name: oreilly-trial
     tap:
-      # The token determines the release type (Github/Gitlab).
       owner: bilalcaliskan
       name: homebrew-tap
       token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     folder: Formula
-    # Brew fails from multiple 32-bit arm versions.
-    # Specify which version should be used.
     goarm: 6
     homepage: https://github.com/bilalcaliskan/oreilly-trial
     license: apache-2.0
@@ -66,8 +62,6 @@ release:
   github:
     owner: bilalcaliskan
     name: oreilly-trial
-  disable: false
-  draft: false
 
 changelog:
   sort: asc
