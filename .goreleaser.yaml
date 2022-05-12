@@ -34,7 +34,9 @@ dockers:
     goos: linux
     goarch: amd64
     use: docker
+    skip_push: false
     build_flag_templates:
+      - --pull
       - --platform=linux/amd64
       - --label=org.opencontainers.image.title={{ .ProjectName }}
       - --label=org.opencontainers.image.description={{ .ProjectName }}
@@ -64,6 +66,8 @@ release:
   github:
     owner: bilalcaliskan
     name: oreilly-trial
+  disable: false
+  draft: false
 
 changelog:
   sort: asc
