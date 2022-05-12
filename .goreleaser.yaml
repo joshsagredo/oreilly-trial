@@ -3,12 +3,10 @@ project_name: oreilly-trial
 
 env:
   - CGO_ENABLED=0
-  - GOFLAGS=-mod=vendor
   - GO111MODULE=auto
 
 before:
   hooks:
-    - go mod vendor
     - go mod tidy
     - go mod download
 
@@ -27,17 +25,6 @@ builds:
 archives:
   - replacements:
       amd64: x86_64
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
-      - '^ci:'
-      - '^build:'
-      - '^Merge branch'
-      - '^Merge pull request'
 
 dockers:
   - image_templates:
@@ -77,5 +64,15 @@ release:
   github:
     owner: bilalcaliskan
     name: oreilly-trial
-  disable: false
-  draft: true
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^build:'
+      - 'README'
+      - '^Merge branch'
+      - '^Merge pull request'
