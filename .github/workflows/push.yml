@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.17.x
-      - name: Lint
+      - name: Run Ineffassign
         run: make ineffassign
 
   test:
@@ -74,15 +74,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      # If this step fails, then you should remove it and run the build manually (see below)
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
+        uses: github/codeql-action/autobuild@v2
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2
 
   sonarcloud:
     runs-on: ubuntu-latest
@@ -144,7 +142,7 @@ jobs:
         with:
           fetch-depth: '0'
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.36.0
+        uses: anothrNick/github-tag-action@1.39.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
@@ -166,9 +164,9 @@ jobs:
           echo "::set-output name=build_time::$(date -u +'%m-%d-%YT%H:%M:%SZ')"
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
       - name: Docker Login
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: docker.io
           username: ${{ github.repository_owner }}
