@@ -29,7 +29,7 @@ jobs:
         with:
           go-version: 1.17.x
       - name: Vet
-        run: make vet
+        run: make vet -f build/ci/Makefile
 
   ineffassign:
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
         with:
           go-version: 1.17.x
       - name: Run Ineffassign
-        run: make ineffassign
+        run: make ineffassign -f build/ci/Makefile
 
   test:
     strategy:
@@ -56,7 +56,7 @@ jobs:
         with:
           go-version: 1.17.x
       - name: Test
-        run: make test
+        run: make test -f build/ci/Makefile
 
   codeql:
     runs-on: ubuntu-latest
@@ -93,6 +93,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dproject.settings=build/ci/sonar-project.properties
       - name: SonarQube Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
@@ -112,4 +115,4 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Test
-        run: make build
+        run: make build -f build/ci/Makefile

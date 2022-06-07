@@ -45,7 +45,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	bannerBytes, _ := ioutil.ReadFile("banner.txt")
+	bannerBytes, _ := ioutil.ReadFile("build/ci/banner.txt")
 	banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
 
 	err := rootCmd.Execute()

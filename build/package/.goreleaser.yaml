@@ -30,7 +30,7 @@ dockers:
   - image_templates:
       - "docker.io/bilalcaliskan/{{ .ProjectName }}:{{ .Version }}"
       - "docker.io/bilalcaliskan/{{ .ProjectName }}:latest"
-    dockerfile: Dockerfile.goreleaser
+    dockerfile: build/package/Dockerfile.goreleaser
     goos: linux
     goarch: amd64
     use: docker
