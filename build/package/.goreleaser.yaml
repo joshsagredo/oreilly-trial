@@ -75,6 +75,7 @@ changelog:
       - '^test:'
       - '^ci:'
       - '^build:'
+      - '^style:'
       - 'README'
       - '^Merge branch'
       - '^Merge pull request'
