@@ -12,6 +12,8 @@ type OreillyTrialOptions struct {
 	UsernameRandomLength int
 	// PasswordRandomLength is the length of the random generated username
 	PasswordRandomLength int
+	// BannerFilePath is the relative path to the banner file
+	BannerFilePath string
 }
 
 // GetOreillyTrialOptions returns the pointer of OreillyTrialOptions

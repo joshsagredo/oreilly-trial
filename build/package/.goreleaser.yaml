@@ -25,6 +25,8 @@ builds:
 archives:
   - replacements:
       amd64: x86_64
+    files:
+      - build/ci/banner.txt
 
 dockers:
   - image_templates:
@@ -34,6 +36,8 @@ dockers:
     goos: linux
     goarch: amd64
     use: docker
+    extra_files:
+      - build/ci/banner.txt
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -71,6 +75,7 @@ changelog:
       - '^test:'
       - '^ci:'
       - '^build:'
+      - '^style:'
       - 'README'
       - '^Merge branch'
       - '^Merge pull request'

@@ -13,6 +13,7 @@ FROM gcr.io/distroless/static:nonroot
 
 WORKDIR /opt/
 COPY --from=builder /app/bin/main .
+COPY --from=builder /app/build/ci/banner.txt .
 USER 65532:65532
 
 CMD ["./main"]
