@@ -1,21 +1,20 @@
 package cmd
 
 import (
+	"github.com/dimiro1/banner"
+	"github.com/spf13/cobra"
+	_ "go.uber.org/automaxprocs"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
-
-	"github.com/dimiro1/banner"
-	"github.com/spf13/cobra"
-	_ "go.uber.org/automaxprocs"
-	"go.uber.org/zap"
 )
 
 func init() {
-	opts := options.GetOreillyTrialOptions()
+	opts = options.GetOreillyTrialOptions()
 	rootCmd.PersistentFlags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
 		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
 	rootCmd.PersistentFlags().StringSliceVarP(&opts.EmailDomains, "emailDomains", "",
@@ -25,7 +24,11 @@ func init() {
 		"length of the random generated username between 0 and 32")
 	rootCmd.PersistentFlags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
 		"length of the random generated password between 0 and 32")
+	rootCmd.PersistentFlags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "banner.txt",
+		"relative path of the banner file")
 }
+
+var opts *options.OreillyTrialOptions
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -34,7 +37,10 @@ var rootCmd = &cobra.Command{
 	Long: `As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 This tool does couple of simple steps to provide free trial account for you`,
 	Run: func(cmd *cobra.Command, args []string) {
-		opts := options.GetOreillyTrialOptions()
+		if _, err := os.Stat(opts.BannerFilePath); err == nil {
+			bannerBytes, _ := ioutil.ReadFile(opts.BannerFilePath)
+			banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
+		}
 
 		if err := oreilly.Generate(opts); err != nil {
 			logging.GetLogger().Fatal("an error occurred while generating user", zap.String("error", err.Error()))
@@ -45,9 +51,6 @@ This tool does couple of simple steps to provide free trial account for you`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	bannerBytes, _ := ioutil.ReadFile("build/ci/banner.txt")
-	banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
-
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
