@@ -24,7 +24,7 @@ func init() {
 		"length of the random generated username between 0 and 32")
 	rootCmd.PersistentFlags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
 		"length of the random generated password between 0 and 32")
-	rootCmd.PersistentFlags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "banner.txt",
+	rootCmd.PersistentFlags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
 }
 
