@@ -27,6 +27,8 @@ archives:
       amd64: x86_64
     files:
       - build/ci/banner.txt
+      - README.md
+      - LICENSE
 
 dockers:
   - image_templates:
