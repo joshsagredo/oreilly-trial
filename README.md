@@ -43,9 +43,9 @@ $ ./oreilly-trial --usernameRandomLength 12 --emailDomains jentrix.com,geekale.c
 
 ### Homebrew
 This project can be installed with [Homebrew](https://brew.sh/):
-```
-brew tap bilalcaliskan/tap
-brew install bilalcaliskan/tap/oreilly-trial
+```shell
+$ brew tap bilalcaliskan/tap
+$ brew install bilalcaliskan/tap/oreilly-trial
 ```
 
 ### Docker
