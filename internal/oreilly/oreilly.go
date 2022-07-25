@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"oreilly-trial/internal/logging"
 	"oreilly-trial/internal/options"
 	"oreilly-trial/internal/random"
+
+	"go.uber.org/zap"
 )
 
 var (
@@ -35,6 +36,10 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		err                error
 	)
 
+	// generate random email address from usable domains
+	emailDomain := random.PickEmail(opts.EmailDomains)
+	logger.Info("selected random email domain", zap.String("emailDomain", emailDomain))
+
 	// generate random username and password
 	if username, err = random.Generate(opts.UsernameRandomLength, random.TypeUsername); err != nil {
 		return err
@@ -44,11 +49,8 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		return err
 	}
 
-	logger.Info("random credentials generated", zap.String("username", username), zap.String("password", password))
-
-	// generate random email address from usable domains
-	emailDomain := random.PickEmail(opts.EmailDomains)
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
+	logger.Info("random credentials generated", zap.String("email", emailAddr), zap.String("password", password))
 
 	// prepare json data
 	values := map[string]string{
