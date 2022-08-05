@@ -1,16 +1,17 @@
 package cmd
 
 import (
+	"io/ioutil"
+	"os"
+	"strings"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
+	"github.com/bilalcaliskan/oreilly-trial/internal/options"
+	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/dimiro1/banner"
 	"github.com/spf13/cobra"
 	_ "go.uber.org/automaxprocs"
 	"go.uber.org/zap"
-	"io/ioutil"
-	"oreilly-trial/internal/logging"
-	"oreilly-trial/internal/options"
-	"oreilly-trial/internal/oreilly"
-	"os"
-	"strings"
 )
 
 func init() {
@@ -28,12 +29,16 @@ func init() {
 		"relative path of the banner file")
 }
 
-var opts *options.OreillyTrialOptions
+var (
+	opts       *options.OreillyTrialOptions
+	GitVersion string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "oreilly-trial",
-	Short: "Trial account generator tool for Oreilly",
+	Use:     "oreilly-trial",
+	Short:   "Trial account generator tool for Oreilly",
+	Version: GitVersion,
 	Long: `As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 This tool does couple of simple steps to provide free trial account for you`,
 	Run: func(cmd *cobra.Command, args []string) {

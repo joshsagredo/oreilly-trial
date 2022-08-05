@@ -1,4 +1,4 @@
-module oreilly-trial
+module github.com/bilalcaliskan/oreilly-trial
 
 go 1.17
 

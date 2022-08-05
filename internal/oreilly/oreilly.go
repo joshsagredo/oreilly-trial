@@ -8,9 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"oreilly-trial/internal/logging"
-	"oreilly-trial/internal/options"
-	"oreilly-trial/internal/random"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
+	"github.com/bilalcaliskan/oreilly-trial/internal/options"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 
 	"go.uber.org/zap"
 )

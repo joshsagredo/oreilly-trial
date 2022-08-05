@@ -25,7 +25,6 @@ oreilly-trial can be customized with several command line arguments:
 --emailDomains              strings     comma separated list of usable domain for creating trial account, it should be a valid domain (default [jentrix.com,geekale.com,64ge.com,frnla.com])
 --usernameRandomLength      int         length of the random generated username between 0 and 32 (default 16)
 --passwordRandomLength      int         length of the random generated password between 0 and 32 (default 16)
---bannerFilePath            string      relative path of the banner file (default "build/ci/banner.txt")
 --help, -h                              help for oreilly-trial
 ```
 
@@ -38,7 +37,7 @@ Binary can be downloaded from [Releases](https://github.com/bilalcaliskan/oreill
 
 After then, you can simply run binary by providing required command line arguments:
 ```shell
-$ ./oreilly-trial --usernameRandomLength 12 --emailDomains jentrix.com,geekale.com
+$ ./oreilly-trial --usernameRandomLength 15
 ```
 
 ### Homebrew
@@ -46,6 +45,11 @@ This project can be installed with [Homebrew](https://brew.sh/):
 ```shell
 $ brew tap bilalcaliskan/tap
 $ brew install bilalcaliskan/tap/oreilly-trial
+```
+
+Then similar to binary method, you can run it by calling below command:
+```shell
+$ oreilly-trial
 ```
 
 ### Docker
