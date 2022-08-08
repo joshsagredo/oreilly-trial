@@ -77,7 +77,10 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		return err
 	}
 
+	logger.Debug("trying to set request headers")
 	setRequestHeaders(req)
+
+	logger.Debug("sending request with http client", zap.String("url", opts.CreateUserUrl))
 	if resp, err = client.Do(req); err != nil {
 		return err
 	}
