@@ -19,7 +19,7 @@ test_coverage:
 	go test ./... -race -coverprofile=coverage.txt -covermode=atomic
 
 build:
-	go build -o bin/main main.go
+	go build -ldflags="-s -w -X github.com/bilalcaliskan/oreilly-trial/cmd.GitVersion=1.0.0" -o bin/main main.go
 
 run:
 	go run main.go

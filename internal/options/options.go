@@ -14,6 +14,8 @@ type OreillyTrialOptions struct {
 	PasswordRandomLength int
 	// BannerFilePath is the relative path to the banner file
 	BannerFilePath string
+	// VerboseLog is the verbosity of the logging library
+	VerboseLog bool
 }
 
 // GetOreillyTrialOptions returns the pointer of OreillyTrialOptions

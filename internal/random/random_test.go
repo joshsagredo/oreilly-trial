@@ -1,8 +1,9 @@
 package random
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // TestGenerate function tests if Generate function running properly

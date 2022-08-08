@@ -2,11 +2,12 @@ package oreilly
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"oreilly-trial/internal/options"
 	"testing"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/options"
+	"github.com/stretchr/testify/assert"
 )
 
 var (

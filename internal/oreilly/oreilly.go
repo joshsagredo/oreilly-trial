@@ -8,9 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"oreilly-trial/internal/logging"
-	"oreilly-trial/internal/options"
-	"oreilly-trial/internal/random"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
+	"github.com/bilalcaliskan/oreilly-trial/internal/options"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 
 	"go.uber.org/zap"
 )
@@ -76,7 +77,10 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		return err
 	}
 
+	logger.Debug("trying to set request headers")
 	setRequestHeaders(req)
+
+	logger.Debug("sending request with http client", zap.String("url", opts.CreateUserUrl))
 	if resp, err = client.Do(req); err != nil {
 		return err
 	}
