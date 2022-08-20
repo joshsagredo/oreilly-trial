@@ -1,8 +1,12 @@
 ---
 name: PR
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
+env:
+  GO111MODULE: on
 
 jobs:
   lint:

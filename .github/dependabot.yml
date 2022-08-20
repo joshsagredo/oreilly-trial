@@ -8,3 +8,12 @@ updates:
     target-branch: "devel"
     labels:
       - "dependabot"
+      - "gomod"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "devel"
+    labels:
+      - "dependabot"
+      - "github-actions"

@@ -1,3 +1,5 @@
+.PHONY: all build test lint fmt vet ineffassign test_coverage run
+
 lint:
 	golangci-lint run
 
@@ -41,5 +43,3 @@ upgrade-direct-deps:
   	done
 	go mod tidy
 	go mod vendor
-
-all: test build run
