@@ -19,7 +19,7 @@ builds:
       - amd64
     binary: oreilly-trial
     ldflags:
-      - -s -w -X github.com/bilalcaliskan/oreilly-trial/cmd.GitVersion={{ .Version }} -X github.com/bilalcaliskan/oreilly-trial/cmd.gitCommit={{ .ShortCommit }}  -X github.com/bilalcaliskan/oreilly-trial/cmd.buildDate={{ .CommitDate }}
+      - -s -w -X github.com/bilalcaliskan/oreilly-trial/internal/version.gitVersion={{ .Version }} -X github.com/bilalcaliskan/oreilly-trial/internal/version.gitCommit={{ .ShortCommit }}  -X github.com/bilalcaliskan/oreilly-trial/internal/version.buildDate={{ .CommitDate }}
     main: ./main.go
 
 archives:
