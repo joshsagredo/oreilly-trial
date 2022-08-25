@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -35,7 +34,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&opts.VerboseLog, "verbose", "v", false, "verbose output of the logging library (default false)")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
-		panic("fatal error occured while hiding flag")
+		logging.GetLogger().Fatal("fatal error occured while hiding flag", zap.Error(err))
 	}
 }
 
@@ -52,7 +51,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 		}
 
 		if _, err := os.Stat(opts.BannerFilePath); err == nil {
-			bannerBytes, _ := ioutil.ReadFile(opts.BannerFilePath)
+			bannerBytes, _ := os.ReadFile(opts.BannerFilePath)
 			banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
 		}
 

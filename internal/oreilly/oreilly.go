@@ -3,17 +3,14 @@ package oreilly
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"net/http"
-
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
-
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"io"
+	"net/http"
 )
 
 var (
@@ -43,11 +40,11 @@ func Generate(opts *options.OreillyTrialOptions) error {
 
 	// generate random username and password
 	if username, err = random.Generate(opts.UsernameRandomLength, random.TypeUsername); err != nil {
-		return err
+		return errors.Wrap(err, "unable to generate username")
 	}
 
 	if password, err = random.Generate(opts.PasswordRandomLength, random.TypePassword); err != nil {
-		return err
+		return errors.Wrap(err, "unable to generate password")
 	}
 
 	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
@@ -69,12 +66,12 @@ func Generate(opts *options.OreillyTrialOptions) error {
 
 	// marshall the json body
 	if jsonData, err = json.Marshal(values); err != nil {
-		return err
+		return errors.Wrap(err, "unable to marshal request body")
 	}
 
 	// prepare and make the request
 	if req, err = http.NewRequest("POST", opts.CreateUserUrl, bytes.NewBuffer(jsonData)); err != nil {
-		return err
+		return errors.Wrap(err, "unable to prepare http request")
 	}
 
 	logger.Debug("trying to set request headers")
@@ -82,25 +79,22 @@ func Generate(opts *options.OreillyTrialOptions) error {
 
 	logger.Debug("sending request with http client", zap.String("url", opts.CreateUserUrl))
 	if resp, err = client.Do(req); err != nil {
-		return err
+		return errors.Wrapf(err, "unable to do http request to remote host %s\n", opts.CreateUserUrl)
 	}
 
 	defer func(body io.ReadCloser) {
-		err := body.Close()
-		if err != nil {
-			panic(err)
-		}
+		err = body.Close()
 	}(resp.Body)
 
 	// read the response
-	if respBody, err = ioutil.ReadAll(resp.Body); err != nil {
-		return err
+	if respBody, err = io.ReadAll(resp.Body); err != nil {
+		return errors.Wrap(err, "unable to read response")
 	}
 
 	if resp.StatusCode == 200 {
 		var successResponse successResponse
-		if err := json.Unmarshal(respBody, &successResponse); err != nil {
-			return err
+		if err = json.Unmarshal(respBody, &successResponse); err != nil {
+			return errors.Wrap(err, "unable to unmarshal json response")
 		}
 
 		logger.Info("trial account successfully created", zap.String("email", emailAddr),
@@ -109,7 +103,7 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		return errors.New(string(respBody))
 	}
 
-	return nil
+	return err
 }
 
 // setRequestHeaders gets the http.Request as input and add some headers for proper API request
