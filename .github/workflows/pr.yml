@@ -47,6 +47,18 @@ jobs:
       - name: Run Ineffassign
         run: make ineffassign
 
+  errcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.x
+      - name: Run errcheck
+        run: make errcheck
+
   test:
     strategy:
       matrix:
