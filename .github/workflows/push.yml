@@ -17,12 +17,12 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           # version: latest
-          version: v1.46.1
+          version: v1.49.0
 
   vet:
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: Vet
         run: make vet
 
@@ -44,9 +44,21 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: Run Ineffassign
         run: make ineffassign
+
+  errcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.x
+      - name: Run errcheck
+        run: make errcheck
 
   test:
     strategy:
@@ -57,7 +69,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Test
@@ -69,6 +81,7 @@ jobs:
       - lint
       - vet
       - ineffassign
+      - errcheck
       - test
     strategy:
       fail-fast: false
@@ -92,6 +105,7 @@ jobs:
       - lint
       - vet
       - ineffassign
+      - errcheck
       - test
     steps:
       - uses: actions/checkout@v3
@@ -100,7 +114,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: Coverage Test
         run: make test_coverage
       - name: SonarCloud Scan
@@ -122,6 +136,7 @@ jobs:
       - lint
       - vet
       - ineffassign
+      - errcheck
       - test
     strategy:
       matrix:
@@ -131,7 +146,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Test
@@ -181,7 +196,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v3
         with:

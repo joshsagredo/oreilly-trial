@@ -9,9 +9,12 @@ fmt:
 vet:
 	go vet ./...
 
+errcheck:
+	go install github.com/kisielk/errcheck@v1.6.1
+	errcheck ./...
+
 ineffassign:
-	go get github.com/gordonklaus/ineffassign
-	go mod vendor
+	go install github.com/gordonklaus/ineffassign@latest
 	ineffassign ./...
 
 test:

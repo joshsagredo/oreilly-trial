@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"io/ioutil"
+	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 	"os"
 	"strings"
 
@@ -16,8 +16,9 @@ import (
 
 var (
 	opts       *options.OreillyTrialOptions
-	GitVersion string
+	ver = version.Get()
 )
+
 
 func init() {
 	opts = options.GetOreillyTrialOptions()
@@ -35,7 +36,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&opts.VerboseLog, "verbose", "v", false, "verbose output of the logging library (default false)")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
-		panic("fatal error occured while hiding flag")
+		logging.GetLogger().Fatal("fatal error occured while hiding flag", zap.Error(err))
 	}
 }
 
@@ -43,7 +44,7 @@ func init() {
 var rootCmd = &cobra.Command{
 	Use:     "oreilly-trial",
 	Short:   "Trial account generator tool for Oreilly",
-	Version: GitVersion,
+	Version: ver.GitVersion,
 	Long: `As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 This tool does couple of simple steps to provide free trial account for you`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -52,9 +53,17 @@ This tool does couple of simple steps to provide free trial account for you`,
 		}
 
 		if _, err := os.Stat(opts.BannerFilePath); err == nil {
-			bannerBytes, _ := ioutil.ReadFile(opts.BannerFilePath)
+			bannerBytes, _ := os.ReadFile(opts.BannerFilePath)
 			banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
 		}
+
+		logging.GetLogger().Info("oreilly-trial is started",
+			zap.String("appVersion", ver.GitVersion),
+			zap.String("goVersion", ver.GoVersion),
+			zap.String("goOS", ver.GoOs),
+			zap.String("goArch", ver.GoArch),
+			zap.String("gitCommit", ver.GitCommit),
+			zap.String("buildDate", ver.BuildDate))
 
 		if err := oreilly.Generate(opts); err != nil {
 			logging.GetLogger().Fatal("an error occurred while generating user", zap.String("error", err.Error()))
