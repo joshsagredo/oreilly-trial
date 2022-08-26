@@ -10,7 +10,7 @@ vet:
 	go vet ./...
 
 ineffassign:
-	go install github.com/gordonklaus/ineffassign
+	go get -u github.com/gordonklaus/ineffassign
 	ineffassign ./...
 
 test:
