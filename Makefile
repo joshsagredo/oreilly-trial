@@ -13,7 +13,6 @@ all: clean tools lint fmt test build
 clean:
 	rm -rf $(LOCAL_BIN)
 
-######
 .PHONY: tools
 tools:  golangci-lint-install revive-install go-imports-install ineffassign-install
 	go mod tidy
@@ -33,9 +32,7 @@ errcheck-install:
 .PHONY: ineffassign-install
 ineffassign-install:
 	GOBIN=$(LOCAL_BIN) go install github.com/gordonklaus/ineffassign@$(INEFFASSIGN_VERSION)
-######
 
-######
 .PHONY: lint
 lint: tools run-lint
 
@@ -53,8 +50,6 @@ lint-revive:
 	$(info running revive...)
 	$(LOCAL_BIN)/revive -formatter=stylish -config=.revive.toml -exclude ./vendor/... ./... || (echo revive returned an error, exiting!; sh -c 'exit 1';)
 	$(info revive exited successfully!)
-
-######
 
 .PHONY: upgrade-direct-deps
 upgrade-direct-deps: tidy
@@ -79,7 +74,6 @@ run-goimports: go-imports-install
 go-imports-install:
 	GOBIN=$(LOCAL_BIN) go install golang.org/x/tools/cmd/goimports@$(GOIMPORTS_VERSION)
 
-##########
 .PHONY: fmt
 fmt: tools run-errcheck run-fmt run-ineffassign run-vet
 
@@ -106,7 +100,6 @@ run-vet:
 	$(info running vet...)
 	go vet ./... || (echo vet returned an error, exiting!; sh -c 'exit 1';)
 	$(info vet exited successfully!)
-###########
 
 .PHONY: test
 test: tidy
