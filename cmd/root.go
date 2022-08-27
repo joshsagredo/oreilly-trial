@@ -1,13 +1,14 @@
 package cmd
 
 import (
-	"github.com/bilalcaliskan/oreilly-trial/internal/version"
+	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/version"
+
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
-	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/dimiro1/banner"
 	"github.com/spf13/cobra"
 	_ "go.uber.org/automaxprocs"
@@ -15,10 +16,9 @@ import (
 )
 
 var (
-	opts       *options.OreillyTrialOptions
-	ver = version.Get()
+	opts *options.OreillyTrialOptions
+	ver  = version.Get()
 )
-
 
 func init() {
 	opts = options.GetOreillyTrialOptions()

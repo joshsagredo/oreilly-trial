@@ -18,13 +18,12 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.19.x
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          # version: latest
-          version: v1.49.0
+      - name: Lint code
+        run: make -s lint
+      - name: Clean downloaded binaries
+        run: make -s clean
 
-  vet:
+  fmt:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,32 +32,10 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.19.x
-      - name: Vet
-        run: make vet
-
-  ineffassign:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19.x
-      - name: Run Ineffassign
-        run: make ineffassign
-
-  errcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19.x
-      - name: Run errcheck
-        run: make errcheck
+      - name: Run fmt
+        run: make -s fmt
+      - name: Clean downloaded binaries
+        run: make -s clean
 
   test:
     strategy:
@@ -73,15 +50,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Test
-        run: make test
+        run: make -s test
 
   codeql:
     runs-on: ubuntu-latest
     needs:
       - lint
-      - vet
-      - ineffassign
-      - errcheck
+      - fmt
       - test
     strategy:
       fail-fast: false
@@ -103,9 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - lint
-      - vet
-      - ineffassign
-      - errcheck
+      - fmt
       - test
     steps:
       - uses: actions/checkout@v3
@@ -134,9 +107,7 @@ jobs:
   build:
     needs:
       - lint
-      - vet
-      - ineffassign
-      - errcheck
+      - fmt
       - test
     strategy:
       matrix:
@@ -150,7 +121,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Test
-        run: make -B build
+        run: make -s build
 
   tag:
     runs-on: ubuntu-latest

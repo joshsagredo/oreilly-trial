@@ -1,8 +1,9 @@
 package options
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // TestGetOreillyTrialOptions function tests if GetOreillyTrialOptions function running properly
