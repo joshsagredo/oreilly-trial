@@ -80,7 +80,7 @@ jobs:
         with:
           go-version: 1.19.x
       - name: Coverage Test
-        run: make test_coverage
+        run: make -s test-with-coverage
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
