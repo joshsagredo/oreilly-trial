@@ -14,7 +14,7 @@ clean:
 	rm -rf $(LOCAL_BIN)
 
 .PHONY: tools
-tools:  golangci-lint-install revive-install go-imports-install ineffassign-install
+tools:  golangci-lint-install revive-install go-imports-install ineffassign-install errcheck-install
 	go mod tidy
 
 .PHONY: golangci-lint-install
@@ -25,13 +25,13 @@ golangci-lint-install:
 revive-install:
 	GOBIN=$(LOCAL_BIN) go install github.com/mgechev/revive@$(REVIVE_VERSION)
 
-.PHONY: errcheck-install
-errcheck-install:
-	GOBIN=$(LOCAL_BIN) go install github.com/mgechev/revive@$(REVIVE_VERSION)
-
 .PHONY: ineffassign-install
 ineffassign-install:
 	GOBIN=$(LOCAL_BIN) go install github.com/gordonklaus/ineffassign@$(INEFFASSIGN_VERSION)
+
+.PHONY: errcheck-install
+errcheck-install:
+	GOBIN=$(LOCAL_BIN) go install github.com/kisielk/errcheck@$(ERRCHECK_VERSION)
 
 .PHONY: lint
 lint: tools run-lint
@@ -80,7 +80,7 @@ fmt: tools run-errcheck run-fmt run-ineffassign run-vet
 .PHONY: run-errcheck
 run-errcheck:
 	$(info running errcheck...)
-	errcheck ./... || (echo errcheck returned an error, exiting!; sh -c 'exit 1';)
+	$(LOCAL_BIN)/errcheck ./... || (echo errcheck returned an error, exiting!; sh -c 'exit 1';)
 	$(info errcheck exited successfully!)
 
 .PHONY: run-fmt
@@ -92,7 +92,7 @@ run-fmt:
 .PHONY: run-ineffassign
 run-ineffassign:
 	$(info running ineffassign...)
-	ineffassign ./... || (echo ineffassign returned an error, exiting!; sh -c 'exit 1';)
+	$(LOCAL_BIN)/ineffassign ./... || (echo ineffassign returned an error, exiting!; sh -c 'exit 1';)
 	$(info ineffassign exited successfully!)
 
 .PHONY: run-vet
