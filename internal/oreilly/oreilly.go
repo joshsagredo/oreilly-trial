@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"io"
-	"net/http"
 )
 
 var (
