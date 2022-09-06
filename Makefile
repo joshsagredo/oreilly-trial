@@ -48,7 +48,7 @@ lint-golangci-lint:
 .PHONY: lint-revive
 lint-revive:
 	$(info running revive...)
-	$(LOCAL_BIN)/revive -formatter=stylish -config=.revive.toml -exclude ./vendor/... ./... || (echo revive returned an error, exiting!; sh -c 'exit 1';)
+	$(LOCAL_BIN)/revive -formatter=stylish -config=build/ci/.revive.toml -exclude ./vendor/... ./... || (echo revive returned an error, exiting!; sh -c 'exit 1';)
 	$(info revive exited successfully!)
 
 .PHONY: upgrade-direct-deps
