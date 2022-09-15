@@ -52,6 +52,26 @@ jobs:
       - name: Test
         run: make -s test
 
+  gosec:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - fmt
+      - test
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          # we let the report trigger content trigger a failure using the GitHub Security features.
+          args: '-no-fail -fmt sarif -out results.sarif ./...'
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: results.sarif
+
   codeql:
     runs-on: ubuntu-latest
     needs:
@@ -126,6 +146,7 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     needs:
+      - gosec
       - codeql
       - sonarcloud
       - build
@@ -135,7 +156,7 @@ jobs:
         with:
           fetch-depth: '0'
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.39.0
+        uses: anothrNick/github-tag-action@1.41.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
