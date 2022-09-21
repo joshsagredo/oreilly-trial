@@ -1,0 +1,4 @@
+generated at: https://manytools.org/hacker-tools/ascii-banner/
+font: standart
+horizontal spacing: normal
+vertical spacing: fitted
