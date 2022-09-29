@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"os"
 	"strings"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 
@@ -33,7 +34,7 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().BoolVarP(&opts.VerboseLog, "verbose", "v", false, "verbose output of the logging library (default false)")
+	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
 		logging.GetLogger().Fatal("fatal error occured while hiding flag", zap.Error(err))
@@ -48,13 +49,14 @@ var rootCmd = &cobra.Command{
 	Long: `As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 This tool does couple of simple steps to provide free trial account for you`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if opts.VerboseLog {
-			logging.Atomic.SetLevel(zap.DebugLevel)
-		}
-
 		if _, err := os.Stat(opts.BannerFilePath); err == nil {
 			bannerBytes, _ := os.ReadFile(opts.BannerFilePath)
 			banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
+		}
+
+		if err := logging.SetLogLevel(opts.LogLevel); err != nil {
+			logging.GetLogger().Fatal("fatal error occured while setting log level", zap.Error(err))
+			return
 		}
 
 		logging.GetLogger().Info("oreilly-trial is started",
@@ -66,7 +68,8 @@ This tool does couple of simple steps to provide free trial account for you`,
 			zap.String("buildDate", ver.BuildDate))
 
 		if err := oreilly.Generate(opts); err != nil {
-			logging.GetLogger().Fatal("an error occurred while generating user", zap.String("error", err.Error()))
+			logging.GetLogger().Fatal("an error occurred while generating user", zap.Error(err))
+			return
 		}
 	},
 }

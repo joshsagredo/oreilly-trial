@@ -80,7 +80,7 @@ func Generate(opts *options.OreillyTrialOptions) error {
 
 	logger.Debug("sending request with http client", zap.String("url", opts.CreateUserUrl))
 	if resp, err = client.Do(req); err != nil {
-		return errors.Wrapf(err, "unable to do http request to remote host %s\n", opts.CreateUserUrl)
+		return errors.Wrapf(err, "unable to do http request to remote host %s", opts.CreateUserUrl)
 	}
 
 	defer func(body io.ReadCloser) {
