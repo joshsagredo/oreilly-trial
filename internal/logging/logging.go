@@ -9,12 +9,12 @@ import (
 
 var (
 	logger *zap.Logger
-	Atomic zap.AtomicLevel
+	atomic zap.AtomicLevel
 )
 
 func init() {
-	Atomic = zap.NewAtomicLevel()
-	Atomic.SetLevel(zap.InfoLevel)
+	atomic = zap.NewAtomicLevel()
+	atomic.SetLevel(zap.InfoLevel)
 	logger = zap.New(zapcore.NewTee(zapcore.NewCore(zapcore.NewJSONEncoder(zapcore.EncoderConfig{
 		MessageKey:   "message",
 		LevelKey:     "severity",
@@ -23,10 +23,20 @@ func init() {
 		EncodeTime:   zapcore.RFC3339TimeEncoder,
 		CallerKey:    "caller",
 		EncodeCaller: zapcore.FullCallerEncoder,
-	}), zapcore.Lock(os.Stdout), Atomic)))
+	}), zapcore.Lock(os.Stdout), atomic)))
 }
 
 // GetLogger returns the shared *zap.Logger
 func GetLogger() *zap.Logger {
 	return logger
+}
+
+func SetLogLevel(level string) error {
+	parsedLevel, err := zapcore.ParseLevel(level)
+	if err != nil {
+		return err
+	}
+
+	atomic.SetLevel(parsedLevel)
+	return nil
 }
