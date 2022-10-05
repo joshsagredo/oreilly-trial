@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math/big"
 	mathRand "math/rand"
+	"time"
 )
 
 const (
@@ -15,6 +16,10 @@ const (
 	TypeUsername = "TYPE_USERNAME"
 	TypePassword = "TYPE_PASSWORD"
 )
+
+func init() {
+	mathRand.Seed(time.Now().Unix())
+}
 
 // Generate generates a random string for username or password
 func Generate(length int, outputType string) (string, error) {
