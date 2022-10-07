@@ -6,37 +6,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/mailslurp"
+
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	url     = "https://learning.oreilly.com/api/v1/registration/individual/"
-	domains = []string{"jentrix.com"}
-)
-
-// TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
-func TestGenerateBrokenEmail(t *testing.T) {
-	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
-	mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.WriteHeader(400)
-		if _, err := fmt.Fprint(writer, expectedError); err != nil {
-			t.Fatalf("a fatal error occured while writing response body: %s", err.Error())
-		}
-	}))
-	defer mockServer.Close()
-
-	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        mockServer.URL,
-		EmailDomains:         []string{"hasan"},
-		UsernameRandomLength: 12,
-		PasswordRandomLength: 12,
-	}
-
-	err := Generate(&oto)
-	assert.NotNil(t, err)
-	assert.Equal(t, expectedError, err.Error())
-}
+var url = "https://learning.oreilly.com/api/v1/registration/individual/"
 
 // TestGenerateError function spins up a fake httpserver and simulates a 400 bad request response
 func TestGenerateError(t *testing.T) {
@@ -55,8 +31,6 @@ func TestGenerateError(t *testing.T) {
 
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl:        server.URL,
-		EmailDomains:         domains,
-		UsernameRandomLength: 12,
 		PasswordRandomLength: 12,
 	}
 
@@ -71,8 +45,6 @@ func TestGenerateInvalidHost(t *testing.T) {
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl:        url,
-		EmailDomains:         domains,
-		UsernameRandomLength: 12,
 		PasswordRandomLength: 12,
 	}
 
@@ -88,14 +60,10 @@ func TestGenerateInvalidRandom(t *testing.T) {
 	}{
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 64,
-			PasswordRandomLength: 12,
+			PasswordRandomLength: 666,
 		}},
 		{"case2", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 12,
 			PasswordRandomLength: 665,
 		}},
 	}
@@ -108,6 +76,21 @@ func TestGenerateInvalidRandom(t *testing.T) {
 	}
 }
 
+func TestGenerateTempMailError(t *testing.T) {
+	opts := options.OreillyTrialOptions{
+		CreateUserUrl:        url,
+		PasswordRandomLength: 12,
+	}
+
+	apiKeyOrig := mailslurp.ApiKey
+	mailslurp.ApiKey = "asdasdasdasdasd"
+
+	err := Generate(&opts)
+	assert.NotNil(t, err)
+
+	mailslurp.ApiKey = apiKeyOrig
+}
+
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
 func TestGenerateValidArgs(t *testing.T) {
 	cases := []struct {
@@ -116,14 +99,10 @@ func TestGenerateValidArgs(t *testing.T) {
 	}{
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 12,
 			PasswordRandomLength: 12,
 		}},
 		{"case2", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 16,
 			PasswordRandomLength: 16,
 		}},
 	}

@@ -25,11 +25,6 @@ func init() {
 	opts = options.GetOreillyTrialOptions()
 	rootCmd.Flags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
 		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
-	rootCmd.Flags().StringSliceVarP(&opts.EmailDomains, "emailDomains", "",
-		[]string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
-		"comma separated list of usable domain for creating trial account, it should be a valid domain")
-	rootCmd.Flags().IntVarP(&opts.UsernameRandomLength, "usernameRandomLength", "", 16,
-		"length of the random generated username between 0 and 32")
 	rootCmd.Flags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",

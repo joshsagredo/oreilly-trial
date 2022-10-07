@@ -3,13 +3,14 @@ package oreilly
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/mailslurp"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
-	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -27,33 +28,28 @@ func init() {
 // Generate does the heavy lifting, communicates with the Oreilly API
 func Generate(opts *options.OreillyTrialOptions) error {
 	var (
-		username, password string
-		jsonData           []byte
-		req                *http.Request
-		resp               *http.Response
-		respBody           []byte
-		err                error
+		password string
+		jsonData []byte
+		req      *http.Request
+		resp     *http.Response
+		respBody []byte
+		err      error
 	)
 
-	// generate random email address from usable domains
-	emailDomain := random.PickEmail(opts.EmailDomains)
-	logger.Info("selected random email domain", zap.String("emailDomain", emailDomain))
-
-	// generate random username and password
-	if username, err = random.Generate(opts.UsernameRandomLength, random.TypeUsername); err != nil {
-		return errors.Wrap(err, "unable to generate username")
+	email, err := mailslurp.GenerateTempMail()
+	if err != nil {
+		return errors.Wrap(err, "an error occured while creating temp mail over Mailslurp")
 	}
+	logger.Info("temp email created over Mailslurp", zap.String("email", email))
 
-	if password, err = random.Generate(opts.PasswordRandomLength, random.TypePassword); err != nil {
+	if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
 		return errors.Wrap(err, "unable to generate password")
 	}
-
-	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
-	logger.Info("random credentials generated", zap.String("email", emailAddr), zap.String("password", password))
+	logger.Info("random password for previously created tempmail is generated", zap.String("password", password))
 
 	// prepare json data
 	values := map[string]string{
-		"email":         emailAddr,
+		"email":         email,
 		"password":      password,
 		"first_name":    "John",
 		"last_name":     "Doe",
@@ -98,7 +94,7 @@ func Generate(opts *options.OreillyTrialOptions) error {
 			return errors.Wrap(err, "unable to unmarshal json response")
 		}
 
-		logger.Info("trial account successfully created", zap.String("email", emailAddr),
+		logger.Info("trial account successfully created", zap.String("email", email),
 			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
 		return errors.New(string(respBody))
