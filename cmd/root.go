@@ -68,7 +68,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 			zap.String("buildDate", ver.BuildDate))
 
 		if err := oreilly.Generate(opts); err != nil {
-			logging.GetLogger().Fatal("an error occurred while generating user", zap.Error(err))
+			logging.GetLogger().Error("an error occurred while generating user", zap.String("error", err.Error()))
 			return
 		}
 	},
