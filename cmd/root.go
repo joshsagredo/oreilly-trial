@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"os"
-	"strings"
-
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+	"os"
+	"strings"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 
@@ -31,7 +30,7 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 10,
+	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
 		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
 
@@ -54,7 +53,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 		}
 
 		if err := logging.SetLogLevel(opts.LogLevel); err != nil {
-			logging.GetLogger().Fatal("fatal error occured while setting log level", zap.Error(err))
+			logging.GetLogger().Error("an error occured while setting log level", zap.Error(err))
 			return
 		}
 

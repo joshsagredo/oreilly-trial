@@ -2,6 +2,7 @@
 bin/
 vendor/
 coverage.txt
+cover.html
 
 # Binaries for programs and plugins
 *.exe

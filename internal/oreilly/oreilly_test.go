@@ -49,7 +49,7 @@ func TestGenerateInvalidHost(t *testing.T) {
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl:        url,
 		PasswordRandomLength: 12,
-		AttemptCount:         10,
+		AttemptCount:         15,
 	}
 
 	err := Generate(&oto, "notreallyrequiredmail@example.com", "123123123123")
@@ -65,12 +65,12 @@ func TestGenerateInvalidRandom(t *testing.T) {
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
 			PasswordRandomLength: 666,
-			AttemptCount:         10,
+			AttemptCount:         15,
 		}},
 		{"case2", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
 			PasswordRandomLength: 665,
-			AttemptCount:         10,
+			AttemptCount:         15,
 		}},
 	}
 
@@ -92,7 +92,7 @@ func TestGenerateValidArgs(t *testing.T) {
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
 			PasswordRandomLength: 12,
-			AttemptCount:         10,
+			AttemptCount:         15,
 		}},
 	}
 
