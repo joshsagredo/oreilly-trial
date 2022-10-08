@@ -25,7 +25,12 @@ func GenerateTempMails(count int) ([]string, error) {
 		return tempmails, errors.Wrap(err, "unable to make request")
 	}
 
-	defer res.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(res.Body)
 	body, _ := io.ReadAll(res.Body)
 
 	if res.StatusCode == 200 {
