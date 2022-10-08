@@ -15,21 +15,23 @@
 As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 
 This tool does couple of simple steps to provide free trial account for you:
-  - Register with temp mail to https://learning.oreilly.com/
-  - Print the login information to console and then exit.
+  - Creates temp mails(**--attemptCount**) over API of www.1secmail.com
+  - Tries to register with created temp mails to https://learning.oreilly.com/
+  - Prints the login information to console and then exit.
 
 ## Configuration
 oreilly-trial can be customized with several command line arguments:
 ```
+Flags:
+      --attemptCount int           attempt count of how many times oreilly-trial will try to register again after failed attempts (default 10)
       --createUserUrl string       url of the user creation on Oreilly API (default "https://learning.oreilly.com/api/v1/registration/individual/")
-      --emailDomains strings       comma separated list of usable domain for creating trial account, it should be a valid domain (default [jentrix.com,geekale.com,64ge.com,frnla.com])
   -h, --help                       help for oreilly-trial
+      --logLevel string            log level logging library (debug, info, warn, error) (default "info")
       --passwordRandomLength int   length of the random generated password between 0 and 32 (default 16)
-      --usernameRandomLength int   length of the random generated username between 0 and 32 (default 16)
-  -v, --verbose                    verbose output of the logging library (default false)
+  -v, --version                    version for oreilly-trial
 ```
 
-> If you need more usable domains for email randomization, please check https://temp-mail.org/
+> By default, oreilly-trial attempts to create trial account **--attemptCount** times. Default value of that flag is 10, if you can not create trial account in **--attemptCount** attempts, please increase that value in the range of 1-20.
 
 ## Installation
 
@@ -38,7 +40,7 @@ Binary can be downloaded from [Releases](https://github.com/bilalcaliskan/oreill
 
 After then, you can simply run binary by providing required command line arguments:
 ```shell
-$ ./oreilly-trial --usernameRandomLength 15
+$ ./oreilly-trial --attemptCount 20
 ```
 
 ### Homebrew

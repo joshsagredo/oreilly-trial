@@ -3,13 +3,11 @@ package oreilly
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
-	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -25,35 +23,18 @@ func init() {
 }
 
 // Generate does the heavy lifting, communicates with the Oreilly API
-func Generate(opts *options.OreillyTrialOptions) error {
+func Generate(opts *options.OreillyTrialOptions, mail, password string) error {
 	var (
-		username, password string
-		jsonData           []byte
-		req                *http.Request
-		resp               *http.Response
-		respBody           []byte
-		err                error
+		jsonData []byte
+		req      *http.Request
+		resp     *http.Response
+		respBody []byte
+		err      error
 	)
-
-	// generate random email address from usable domains
-	emailDomain := random.PickEmail(opts.EmailDomains)
-	logger.Info("selected random email domain", zap.String("emailDomain", emailDomain))
-
-	// generate random username and password
-	if username, err = random.Generate(opts.UsernameRandomLength, random.TypeUsername); err != nil {
-		return errors.Wrap(err, "unable to generate username")
-	}
-
-	if password, err = random.Generate(opts.PasswordRandomLength, random.TypePassword); err != nil {
-		return errors.Wrap(err, "unable to generate password")
-	}
-
-	emailAddr := fmt.Sprintf("%s@%s", username, emailDomain)
-	logger.Info("random credentials generated", zap.String("email", emailAddr), zap.String("password", password))
 
 	// prepare json data
 	values := map[string]string{
-		"email":         emailAddr,
+		"email":         mail,
 		"password":      password,
 		"first_name":    "John",
 		"last_name":     "Doe",
@@ -97,9 +78,6 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		if err = json.Unmarshal(respBody, &successResponse); err != nil {
 			return errors.Wrap(err, "unable to unmarshal json response")
 		}
-
-		logger.Info("trial account successfully created", zap.String("email", emailAddr),
-			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
 		return errors.New(string(respBody))
 	}

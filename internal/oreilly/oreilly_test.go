@@ -6,37 +6,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
+	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+	"go.uber.org/zap"
+
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	url     = "https://learning.oreilly.com/api/v1/registration/individual/"
-	domains = []string{"jentrix.com"}
-)
-
-// TestGenerateBrokenEmail function tests if Generate function fails with broken arguments and returns desired error
-func TestGenerateBrokenEmail(t *testing.T) {
-	expectedError := "{\"email\": [\"Enter a valid email address.\"]}"
-	mockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.WriteHeader(400)
-		if _, err := fmt.Fprint(writer, expectedError); err != nil {
-			t.Fatalf("a fatal error occured while writing response body: %s", err.Error())
-		}
-	}))
-	defer mockServer.Close()
-
-	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        mockServer.URL,
-		EmailDomains:         []string{"hasan"},
-		UsernameRandomLength: 12,
-		PasswordRandomLength: 12,
-	}
-
-	err := Generate(&oto)
-	assert.NotNil(t, err)
-	assert.Equal(t, expectedError, err.Error())
-}
+var url = "https://learning.oreilly.com/api/v1/registration/individual/"
 
 // TestGenerateError function spins up a fake httpserver and simulates a 400 bad request response
 func TestGenerateError(t *testing.T) {
@@ -55,12 +34,10 @@ func TestGenerateError(t *testing.T) {
 
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl:        server.URL,
-		EmailDomains:         domains,
-		UsernameRandomLength: 12,
 		PasswordRandomLength: 12,
 	}
 
-	err := Generate(&oto)
+	err := Generate(&oto, "notreallyrequiredmail@example.com", "123123123123")
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
 }
@@ -71,12 +48,11 @@ func TestGenerateInvalidHost(t *testing.T) {
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
 		CreateUserUrl:        url,
-		EmailDomains:         domains,
-		UsernameRandomLength: 12,
 		PasswordRandomLength: 12,
+		AttemptCount:         10,
 	}
 
-	err := Generate(&oto)
+	err := Generate(&oto, "notreallyrequiredmail@example.com", "123123123123")
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
 }
@@ -88,21 +64,20 @@ func TestGenerateInvalidRandom(t *testing.T) {
 	}{
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 64,
-			PasswordRandomLength: 12,
+			PasswordRandomLength: 666,
+			AttemptCount:         10,
 		}},
 		{"case2", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 12,
 			PasswordRandomLength: 665,
+			AttemptCount:         10,
 		}},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			err := Generate(&tc.oto)
+			err := Generate(&tc.oto, "notreallyrequiredmail@example.com", "123123123123")
+			assert.NotNil(t, err)
 			assert.NotNil(t, err)
 		})
 	}
@@ -116,21 +91,31 @@ func TestGenerateValidArgs(t *testing.T) {
 	}{
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 12,
 			PasswordRandomLength: 12,
-		}},
-		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
-			EmailDomains:         domains,
-			UsernameRandomLength: 16,
-			PasswordRandomLength: 16,
+			AttemptCount:         10,
 		}},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			err := Generate(&tc.oto)
+			password, err := random.GeneratePassword(tc.oto.PasswordRandomLength)
+			assert.NotEmpty(t, password)
+			assert.Nil(t, err)
+
+			tempmails, err := mail.GenerateTempMails(tc.oto.AttemptCount)
+			if err != nil {
+				logging.GetLogger().Error("an error occurred while generating temp mails", zap.String("error", err.Error()))
+				return
+			}
+
+			for _, temp := range tempmails {
+				err = Generate(&tc.oto, temp, password)
+
+				if err == nil {
+					break
+				}
+			}
+
 			assert.Nil(t, err)
 		})
 	}

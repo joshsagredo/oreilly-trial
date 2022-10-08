@@ -4,7 +4,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 
@@ -25,15 +27,12 @@ func init() {
 	opts = options.GetOreillyTrialOptions()
 	rootCmd.Flags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
 		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
-	rootCmd.Flags().StringSliceVarP(&opts.EmailDomains, "emailDomains", "",
-		[]string{"jentrix.com", "geekale.com", "64ge.com", "frnla.com"},
-		"comma separated list of usable domain for creating trial account, it should be a valid domain")
-	rootCmd.Flags().IntVarP(&opts.UsernameRandomLength, "usernameRandomLength", "", 16,
-		"length of the random generated username between 0 and 32")
 	rootCmd.Flags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
+	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 10,
+		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
@@ -67,10 +66,32 @@ This tool does couple of simple steps to provide free trial account for you`,
 			zap.String("gitCommit", ver.GitCommit),
 			zap.String("buildDate", ver.BuildDate))
 
-		if err := oreilly.Generate(opts); err != nil {
-			logging.GetLogger().Error("an error occurred while generating user", zap.String("error", err.Error()))
+		var password string
+		var err error
+		if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
+			logging.GetLogger().Error("unable to generate password", zap.String("error", err.Error()))
 			return
 		}
+
+		tempmails, err := mail.GenerateTempMails(opts.AttemptCount)
+		if err != nil {
+			logging.GetLogger().Error("an error occurred while generating temp mails", zap.String("error", err.Error()))
+			return
+		}
+
+		for i, mail := range tempmails {
+			err := oreilly.Generate(opts, mail, password)
+			if err == nil {
+				logging.GetLogger().Info("trial account successfully created", zap.String("email", mail),
+					zap.String("password", password), zap.Int("attempt", i+1))
+				return
+			}
+
+			logging.GetLogger().Error("an error occurred while generating user with tempmail", zap.Int("attempt", i+1),
+				zap.String("mail", mail), zap.String("error", err.Error()))
+		}
+
+		logging.GetLogger().Error("all attempts are failed, please try to increase attempt count with --attemptCount flag")
 	},
 }
 

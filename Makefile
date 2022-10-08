@@ -43,13 +43,11 @@ run-lint: lint-golangci-lint lint-revive
 lint-golangci-lint:
 	$(info running golangci-lint...)
 	$(LOCAL_BIN)/golangci-lint -v run ./... || (echo golangci-lint returned an error, exiting!; sh -c 'exit 1';)
-	$(info golangci-lint exited successfully!)
 
 .PHONY: lint-revive
 lint-revive:
 	$(info running revive...)
 	$(LOCAL_BIN)/revive -formatter=stylish -config=build/ci/.revive.toml -exclude ./vendor/... ./... || (echo revive returned an error, exiting!; sh -c 'exit 1';)
-	$(info revive exited successfully!)
 
 .PHONY: upgrade-direct-deps
 upgrade-direct-deps: tidy
@@ -81,25 +79,21 @@ fmt: tools run-errcheck run-fmt run-ineffassign run-vet
 run-errcheck:
 	$(info running errcheck...)
 	$(LOCAL_BIN)/errcheck ./... || (echo errcheck returned an error, exiting!; sh -c 'exit 1';)
-	$(info errcheck exited successfully!)
 
 .PHONY: run-fmt
 run-fmt:
 	$(info running fmt...)
 	go fmt ./... || (echo fmt returned an error, exiting!; sh -c 'exit 1';)
-	$(info fmt exited successfully!)
 
 .PHONY: run-ineffassign
 run-ineffassign:
 	$(info running ineffassign...)
 	$(LOCAL_BIN)/ineffassign ./... || (echo ineffassign returned an error, exiting!; sh -c 'exit 1';)
-	$(info ineffassign exited successfully!)
 
 .PHONY: run-vet
 run-vet:
 	$(info running vet...)
 	go vet ./... || (echo vet returned an error, exiting!; sh -c 'exit 1';)
-	$(info vet exited successfully!)
 
 .PHONY: test
 test: tidy
@@ -118,7 +112,6 @@ update: tidy
 build: tidy
 	$(info building binary...)
 	go build -o bin/main main.go || (echo an error while building binary, exiting!; sh -c 'exit 1';)
-	$(info binary built successfully!)
 
 .PHONY: run
 run: tidy
