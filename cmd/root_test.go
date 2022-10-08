@@ -23,8 +23,8 @@ func TestExecute(t *testing.T) {
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
-	rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
-	rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
+	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
+	_ = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
 }
 
 func TestExecuteMissingBannerFile(t *testing.T) {
@@ -36,7 +36,7 @@ func TestExecuteMissingBannerFile(t *testing.T) {
 
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
-	rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
+	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 }
 
 func TestExecuteWrongLogLevel(t *testing.T) {
@@ -49,7 +49,7 @@ func TestExecuteWrongLogLevel(t *testing.T) {
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
-	rootCmd.Flags().Set("logLevel", logLevelOrig)
+	_ = rootCmd.Flags().Set("logLevel", logLevelOrig)
 }
 
 func TestExecuteWrongPasswordLength(t *testing.T) {
@@ -63,7 +63,7 @@ func TestExecuteWrongPasswordLength(t *testing.T) {
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
-	rootCmd.Flags().Set("passwordRandomLength", strconv.FormatInt(int64(passwordLengthOrig), 10))
+	_ = rootCmd.Flags().Set("passwordRandomLength", strconv.FormatInt(int64(passwordLengthOrig), 10))
 }
 
 func TestExecuteWrongAttemptCount(t *testing.T) {
@@ -77,5 +77,5 @@ func TestExecuteWrongAttemptCount(t *testing.T) {
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
-	rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
+	_ = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
 }
