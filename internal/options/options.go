@@ -10,6 +10,8 @@ type OreillyTrialOptions struct {
 	PasswordRandomLength int
 	// BannerFilePath is the relative path to the banner file
 	BannerFilePath string
+	// AttemptCount is the value of how many times oreilly-trial will try to register again after failed attempts
+	AttemptCount int
 	// LogLevel is the level of the logging library
 	LogLevel string
 }

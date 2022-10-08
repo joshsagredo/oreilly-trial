@@ -6,9 +6,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/bilalcaliskan/oreilly-trial/internal/mailslurp"
-	"github.com/bilalcaliskan/oreilly-trial/internal/random"
-
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/pkg/errors"
@@ -26,9 +23,8 @@ func init() {
 }
 
 // Generate does the heavy lifting, communicates with the Oreilly API
-func Generate(opts *options.OreillyTrialOptions) error {
+func Generate(opts *options.OreillyTrialOptions, mail, password string) error {
 	var (
-		password string
 		jsonData []byte
 		req      *http.Request
 		resp     *http.Response
@@ -36,20 +32,9 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		err      error
 	)
 
-	email, err := mailslurp.GenerateTempMail()
-	if err != nil {
-		return errors.Wrap(err, "an error occured while creating temp mail over Mailslurp")
-	}
-	logger.Info("temp email created over Mailslurp", zap.String("email", email))
-
-	if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
-		return errors.Wrap(err, "unable to generate password")
-	}
-	logger.Info("random password for previously created tempmail is generated", zap.String("password", password))
-
 	// prepare json data
 	values := map[string]string{
-		"email":         email,
+		"email":         mail,
 		"password":      password,
 		"first_name":    "John",
 		"last_name":     "Doe",
@@ -93,9 +78,6 @@ func Generate(opts *options.OreillyTrialOptions) error {
 		if err = json.Unmarshal(respBody, &successResponse); err != nil {
 			return errors.Wrap(err, "unable to unmarshal json response")
 		}
-
-		logger.Info("trial account successfully created", zap.String("email", email),
-			zap.String("password", password), zap.String("user_id", successResponse.UserID))
 	} else {
 		return errors.New(string(respBody))
 	}
