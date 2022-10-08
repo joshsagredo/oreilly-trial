@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"os"
-	"strings"
-
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+	"log"
+	"os"
+	"strings"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 
@@ -54,7 +54,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 		}
 
 		if err := logging.SetLogLevel(opts.LogLevel); err != nil {
-			logging.GetLogger().Fatal("fatal error occured while setting log level", zap.Error(err))
+			logging.GetLogger().Error("an error occured while setting log level", zap.Error(err))
 			return
 		}
 
@@ -65,6 +65,8 @@ This tool does couple of simple steps to provide free trial account for you`,
 			zap.String("goArch", ver.GoArch),
 			zap.String("gitCommit", ver.GitCommit),
 			zap.String("buildDate", ver.BuildDate))
+
+		log.Println(opts)
 
 		var password string
 		var err error
