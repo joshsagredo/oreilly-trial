@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"errors"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+	"github.com/manifoldco/promptui"
 	"os"
 	"strings"
 
@@ -30,9 +32,11 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
+	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 1,
 		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
+	rootCmd.Flags().BoolVarP(&opts.InteractiveMode, "interactiveMode", "", true, "boolean param that "+
+		"lets you restart the app after all failed attempts")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
 		logging.GetLogger().Fatal("fatal error occured while hiding flag", zap.Error(err))
@@ -65,32 +69,58 @@ This tool does couple of simple steps to provide free trial account for you`,
 			zap.String("gitCommit", ver.GitCommit),
 			zap.String("buildDate", ver.BuildDate))
 
-		var password string
-		var err error
-		if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
-			logging.GetLogger().Error("unable to generate password", zap.String("error", err.Error()))
-			return
-		}
-
-		tempmails, err := mail.GenerateTempMails(opts.AttemptCount)
-		if err != nil {
-			logging.GetLogger().Error("an error occurred while generating temp mails", zap.String("error", err.Error()))
-			return
-		}
-
-		for i, mail := range tempmails {
-			err := oreilly.Generate(opts, mail, password)
-			if err == nil {
-				logging.GetLogger().Info("trial account successfully created", zap.String("email", mail),
-					zap.String("password", password), zap.Int("attempt", i+1))
-				return
+		var generateFunc = func() error {
+			var password string
+			var err error
+			if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
+				logging.GetLogger().Error("unable to generate password", zap.String("error", err.Error()))
+				return err
 			}
 
-			logging.GetLogger().Error("an error occurred while generating user with tempmail", zap.Int("attempt", i+1),
-				zap.String("mail", mail), zap.String("error", err.Error()))
+			tempmails, err := mail.GenerateTempMails(opts.AttemptCount)
+			if err != nil {
+				logging.GetLogger().Error("an error occurred while generating temp mails", zap.String("error", err.Error()))
+				return err
+			}
+
+			for i, mail := range tempmails {
+				err := oreilly.Generate(opts, mail, password)
+				if err == nil {
+					logging.GetLogger().Info("trial account successfully created", zap.String("email", mail),
+						zap.String("password", password), zap.Int("attempt", i+1))
+					return nil
+				}
+
+				logging.GetLogger().Error("an error occurred while generating user with tempmail", zap.Int("attempt", i+1),
+					zap.String("mail", mail), zap.String("error", err.Error()))
+			}
+
+			return errors.New("all attempts are failed, please try to increase attempt count with --attemptCount flag")
 		}
 
-		logging.GetLogger().Error("all attempts are failed, please try to increase attempt count with --attemptCount flag")
+		err := generateFunc()
+		if err != nil && opts.InteractiveMode {
+			for err != nil {
+				prompt := promptui.Prompt{
+					Label:     "Would you like to try again?",
+					IsConfirm: true,
+				}
+
+				result, promptErr := prompt.Run()
+
+				for promptErr != nil {
+					if strings.ToLower(result) == "n" {
+						err = nil
+						break
+					}
+					result, promptErr = prompt.Run()
+				}
+
+				if strings.ToLower(result) == "y" {
+					err = generateFunc()
+				}
+			}
+		}
 	},
 }
 
