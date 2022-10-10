@@ -81,13 +81,20 @@ func TestExecuteWrongPasswordLength(t *testing.T) {
 	assert.NotNil(t, passwordLengthOrig)
 	assert.NotEmpty(t, passwordLengthOrig)
 
+	interactiveModeOrig, _ := rootCmd.Flags().GetBool("interactiveMode")
+	assert.NotNil(t, interactiveModeOrig)
+	assert.NotEmpty(t, interactiveModeOrig)
+
 	err := rootCmd.Flags().Set("passwordRandomLength", "444")
+	assert.Nil(t, err)
+	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
 	_ = rootCmd.Flags().Set("passwordRandomLength", strconv.FormatInt(int64(passwordLengthOrig), 10))
+	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
 }
 
 func TestExecuteWrongAttemptCount(t *testing.T) {
