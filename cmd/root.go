@@ -32,7 +32,7 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 1,
+	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
 		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
 	rootCmd.Flags().BoolVarP(&opts.InteractiveMode, "interactiveMode", "", true, "boolean param that "+

@@ -23,9 +23,10 @@ This tool does couple of simple steps to provide free trial account for you:
 oreilly-trial can be customized with several command line arguments:
 ```
 Flags:
-      --attemptCount int           attempt count of how many times oreilly-trial will try to register again after failed attempts (default 10)
+      --attemptCount int           attempt count of how many times oreilly-trial will try to register again after failed attempts (default 15)
       --createUserUrl string       url of the user creation on Oreilly API (default "https://learning.oreilly.com/api/v1/registration/individual/")
   -h, --help                       help for oreilly-trial
+      --interactiveMode            boolean param that lets you restart the app after all failed attempts (default true)
       --logLevel string            log level logging library (debug, info, warn, error) (default "info")
       --passwordRandomLength int   length of the random generated password between 0 and 32 (default 16)
   -v, --version                    version for oreilly-trial

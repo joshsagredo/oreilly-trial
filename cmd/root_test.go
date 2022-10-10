@@ -11,6 +11,10 @@ func TestExecute(t *testing.T) {
 	assert.NotNil(t, attemptCountOrig)
 	assert.NotEmpty(t, attemptCountOrig)
 
+	interactiveModeOrig, _ := rootCmd.Flags().GetBool("interactiveMode")
+	assert.NotNil(t, interactiveModeOrig)
+	assert.NotEmpty(t, interactiveModeOrig)
+
 	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
 	assert.NotNil(t, bannerFilePathOrig)
 	assert.NotEmpty(t, bannerFilePathOrig)
@@ -19,37 +23,57 @@ func TestExecute(t *testing.T) {
 	assert.Nil(t, err)
 	err = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(1), 10))
 	assert.Nil(t, err)
+	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
+	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
 	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 	_ = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
+	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
 }
 
 func TestExecuteMissingBannerFile(t *testing.T) {
 	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
 	assert.NotNil(t, bannerFilePathOrig)
 	assert.NotEmpty(t, bannerFilePathOrig)
+
+	interactiveModeOrig, _ := rootCmd.Flags().GetBool("interactiveMode")
+	assert.NotNil(t, interactiveModeOrig)
+	assert.NotEmpty(t, interactiveModeOrig)
+
 	err := rootCmd.Flags().Set("bannerFilePath", "asdfasdfasdf")
+	assert.Nil(t, err)
+	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
+
 	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
+	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
 }
 
 func TestExecuteWrongLogLevel(t *testing.T) {
 	logLevelOrig, _ := rootCmd.Flags().GetString("logLevel")
 	assert.NotNil(t, logLevelOrig)
 	assert.NotEmpty(t, logLevelOrig)
+
+	interactiveModeOrig, _ := rootCmd.Flags().GetBool("interactiveMode")
+	assert.NotNil(t, interactiveModeOrig)
+	assert.NotEmpty(t, interactiveModeOrig)
+
 	err := rootCmd.Flags().Set("logLevel", "infoooo")
+	assert.Nil(t, err)
+	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
 	_ = rootCmd.Flags().Set("logLevel", logLevelOrig)
+	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
 }
 
 func TestExecuteWrongPasswordLength(t *testing.T) {
@@ -71,11 +95,18 @@ func TestExecuteWrongAttemptCount(t *testing.T) {
 	assert.NotNil(t, attemptCountOrig)
 	assert.NotEmpty(t, attemptCountOrig)
 
+	interactiveModeOrig, _ := rootCmd.Flags().GetBool("interactiveMode")
+	assert.NotNil(t, interactiveModeOrig)
+	assert.NotEmpty(t, interactiveModeOrig)
+
 	err := rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(0), 10))
+	assert.Nil(t, err)
+	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
 	_ = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
+	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
 }
