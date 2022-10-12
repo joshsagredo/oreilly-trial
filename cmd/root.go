@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
@@ -33,7 +32,7 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 1,
+	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
 		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
 	rootCmd.Flags().BoolVarP(&opts.InteractiveMode, "interactiveMode", "", true, "boolean param that "+
@@ -46,12 +45,13 @@ func init() {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "oreilly-trial",
-	Short:   "Trial account generator tool for Oreilly",
-	Version: ver.GitVersion,
+	Use:           "oreilly-trial",
+	Short:         "Trial account generator tool for Oreilly",
+	Version:       ver.GitVersion,
+	SilenceErrors: true,
 	Long: `As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 This tool does couple of simple steps to provide free trial account for you`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if _, err := os.Stat(opts.BannerFilePath); err == nil {
 			bannerBytes, _ := os.ReadFile(opts.BannerFilePath)
 			banner.Init(os.Stdout, true, false, strings.NewReader(string(bannerBytes)))
@@ -59,7 +59,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 
 		if err := logging.SetLogLevel(opts.LogLevel); err != nil {
 			logging.GetLogger().Error("an error occured while setting log level", zap.Error(err))
-			return
+			return err
 		}
 
 		logging.GetLogger().Info("oreilly-trial is started",
@@ -101,14 +101,14 @@ This tool does couple of simple steps to provide free trial account for you`,
 
 		err := generateFunc()
 		if err != nil && opts.InteractiveMode {
-			fmt.Println()
 			prompt := promptui.Prompt{
 				Label:     "Would you like to try again?",
 				IsConfirm: true,
 			}
 
 			for err != nil {
-				promptResult, err := prompt.Run()
+				var promptResult string
+				promptResult, err = prompt.Run()
 				if err != nil && strings.ToLower(promptResult) == "n" {
 					break
 				}
@@ -118,6 +118,8 @@ This tool does couple of simple steps to provide free trial account for you`,
 				}
 			}
 		}
+
+		return err
 	},
 }
 
