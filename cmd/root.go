@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
@@ -32,7 +33,7 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
+	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 1,
 		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
 	rootCmd.Flags().BoolVarP(&opts.InteractiveMode, "interactiveMode", "", true, "boolean param that "+
@@ -100,23 +101,19 @@ This tool does couple of simple steps to provide free trial account for you`,
 
 		err := generateFunc()
 		if err != nil && opts.InteractiveMode {
+			fmt.Println()
+			prompt := promptui.Prompt{
+				Label:     "Would you like to try again?",
+				IsConfirm: true,
+			}
+
 			for err != nil {
-				prompt := promptui.Prompt{
-					Label:     "Would you like to try again?",
-					IsConfirm: true,
+				promptResult, err := prompt.Run()
+				if err != nil && strings.ToLower(promptResult) == "n" {
+					break
 				}
 
-				result, promptErr := prompt.Run()
-
-				for promptErr != nil {
-					if strings.ToLower(result) == "n" {
-						err = nil
-						break
-					}
-					result, promptErr = prompt.Run()
-				}
-
-				if strings.ToLower(result) == "y" {
+				if strings.ToLower(promptResult) == "y" {
 					err = generateFunc()
 				}
 			}
