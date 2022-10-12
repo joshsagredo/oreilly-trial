@@ -97,7 +97,10 @@ This tool does couple of simple steps to provide free trial account for you`,
 					zap.String("mail", mail), zap.String("error", err.Error()))
 			}
 
-			return errors.New("all attempts are failed, please try to increase attempt count with --attemptCount flag")
+			err = errors.New("all attempts are failed, please try to increase attempt count with --attemptCount flag")
+			logging.GetLogger().Error(err.Error())
+
+			return err
 		}
 
 		err := generateFunc()
