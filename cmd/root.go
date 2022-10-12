@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
@@ -101,21 +102,20 @@ This tool does couple of simple steps to provide free trial account for you`,
 
 		err := generateFunc()
 		if err != nil && opts.InteractiveMode {
-			prompt := promptui.Prompt{
-				Label:     "Would you like to try again?",
-				IsConfirm: true,
-			}
-
+			fmt.Println()
 			for err != nil {
-				var promptResult string
-				promptResult, err = prompt.Run()
-				if err != nil && strings.ToLower(promptResult) == "n" {
-					break
+				prompt := promptui.Select{
+					Label: "Would you like to try again?",
+					Items: []string{"Yes please!", "No thanks!"},
 				}
 
-				if strings.ToLower(promptResult) == "y" {
+				_, result, _ := prompt.Run()
+				if result == "Yes please!" {
 					err = generateFunc()
+					continue
 				}
+
+				break
 			}
 		}
 
