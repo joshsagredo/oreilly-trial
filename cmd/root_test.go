@@ -23,7 +23,7 @@ func TestExecute(t *testing.T) {
 	assert.Nil(t, err)
 	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
 	assert.Nil(t, err)
-	err = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(30), 10))
+	err = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(20), 10))
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
