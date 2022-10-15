@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	logger *zap.Logger
+	logger *zap.SugaredLogger
 	client *http.Client
 )
 
@@ -59,7 +59,7 @@ func Generate(opts *options.OreillyTrialOptions, mail, password string) error {
 	logger.Debug("trying to set request headers")
 	setRequestHeaders(req)
 
-	logger.Debug("sending request with http client", zap.String("url", opts.CreateUserUrl))
+	logger.Debug("sending request with http client", "url", opts.CreateUserUrl)
 	if resp, err = client.Do(req); err != nil {
 		return errors.Wrapf(err, "unable to do http request to remote host %s", opts.CreateUserUrl)
 	}

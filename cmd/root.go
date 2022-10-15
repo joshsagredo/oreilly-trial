@@ -17,7 +17,6 @@ import (
 	"github.com/dimiro1/banner"
 	"github.com/spf13/cobra"
 	_ "go.uber.org/automaxprocs"
-	"go.uber.org/zap"
 )
 
 var (
@@ -40,7 +39,7 @@ func init() {
 		"lets you restart the app after all failed attempts")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
-		logging.GetLogger().Fatal("fatal error occured while hiding flag", zap.Error(err))
+		logging.GetLogger().Fatalw("fatal error occured while hiding flag", "error", err.Error())
 	}
 }
 
@@ -59,46 +58,41 @@ This tool does couple of simple steps to provide free trial account for you`,
 		}
 
 		if err := logging.SetLogLevel(opts.LogLevel); err != nil {
-			logging.GetLogger().Error("an error occured while setting log level", zap.Error(err))
+			logging.GetLogger().Errorw("an error occured while setting log level", "error", err.Error())
 			return err
 		}
 
-		logging.GetLogger().Info("oreilly-trial is started",
-			zap.String("appVersion", ver.GitVersion),
-			zap.String("goVersion", ver.GoVersion),
-			zap.String("goOS", ver.GoOs),
-			zap.String("goArch", ver.GoArch),
-			zap.String("gitCommit", ver.GitCommit),
-			zap.String("buildDate", ver.BuildDate))
+		logging.GetLogger().Infow("oreilly-trial is started", "appVersion", ver.GitVersion,
+			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate", ver.BuildDate)
 
 		var generateFunc = func() error {
 			var password string
 			var err error
 			if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
-				logging.GetLogger().Error("unable to generate password", zap.String("error", err.Error()))
+				logging.GetLogger().Errorw("unable to generate password", "error", err.Error())
 				return err
 			}
 
 			tempmails, err := mail.GenerateTempMails(opts.AttemptCount)
 			if err != nil {
-				logging.GetLogger().Error("an error occurred while generating temp mails", zap.String("error", err.Error()))
+				logging.GetLogger().Errorw("an error occurred while generating temp mails", "error", err.Error())
 				return err
 			}
 
 			for i, mail := range tempmails {
 				err := oreilly.Generate(opts, mail, password)
 				if err == nil {
-					logging.GetLogger().Info("trial account successfully created", zap.String("email", mail),
-						zap.String("password", password), zap.Int("attempt", i+1))
+					logging.GetLogger().Infow("trial account successfully created", "email", mail, "password", password,
+						"attempt", i+1)
 					return nil
 				}
 
-				logging.GetLogger().Error("an error occurred while generating user with tempmail", zap.Int("attempt", i+1),
-					zap.String("mail", mail), zap.String("error", err.Error()))
+				logging.GetLogger().Errorw("an error occurred while generating user with tempmail", "attempt", i+1,
+					"mail", mail, "error", err.Error())
 			}
 
 			err = errors.New("all attempts are failed, please try to increase attempt count with --attemptCount flag")
-			logging.GetLogger().Error(err.Error())
+			logging.GetLogger().Errorw(err.Error(), "attemptCount", opts.AttemptCount)
 
 			return err
 		}

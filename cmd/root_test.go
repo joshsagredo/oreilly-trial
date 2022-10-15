@@ -15,9 +15,15 @@ func TestExecute(t *testing.T) {
 	assert.NotNil(t, bannerFilePathOrig)
 	assert.NotEmpty(t, bannerFilePathOrig)
 
+	attemptCountOrig, _ := rootCmd.Flags().GetInt("attemptCount")
+	assert.NotNil(t, attemptCountOrig)
+	assert.NotEmpty(t, attemptCountOrig)
+
 	err := rootCmd.Flags().Set("bannerFilePath", "./../build/ci/banner.txt")
 	assert.Nil(t, err)
 	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
+	assert.Nil(t, err)
+	err = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(30), 10))
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
@@ -25,6 +31,7 @@ func TestExecute(t *testing.T) {
 
 	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
+	_ = rootCmd.Flags().Set("attemptCount", strconv.FormatInt(int64(attemptCountOrig), 10))
 }
 
 func TestExecuteMissingBannerFile(t *testing.T) {
@@ -41,8 +48,7 @@ func TestExecuteMissingBannerFile(t *testing.T) {
 	err = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(false))
 	assert.Nil(t, err)
 
-	err = rootCmd.Execute()
-	assert.Nil(t, err)
+	_ = rootCmd.Execute()
 
 	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 	_ = rootCmd.Flags().Set("interactiveMode", strconv.FormatBool(interactiveModeOrig))
