@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	logger *zap.Logger
+	logger *zap.SugaredLogger
 	atomic zap.AtomicLevel
 )
 
@@ -23,11 +23,11 @@ func init() {
 		EncodeTime:   zapcore.RFC3339TimeEncoder,
 		CallerKey:    "caller",
 		EncodeCaller: zapcore.FullCallerEncoder,
-	}), zapcore.Lock(os.Stdout), atomic)))
+	}), zapcore.Lock(os.Stdout), atomic))).Sugar()
 }
 
 // GetLogger returns the shared *zap.Logger
-func GetLogger() *zap.Logger {
+func GetLogger() *zap.SugaredLogger {
 	return logger
 }
 

@@ -6,12 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
-	"github.com/bilalcaliskan/oreilly-trial/internal/random"
-	"go.uber.org/zap"
-
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -92,7 +89,7 @@ func TestGenerateValidArgs(t *testing.T) {
 		{"case1", options.OreillyTrialOptions{
 			CreateUserUrl:        url,
 			PasswordRandomLength: 12,
-			AttemptCount:         15,
+			AttemptCount:         30,
 		}},
 	}
 
@@ -102,11 +99,7 @@ func TestGenerateValidArgs(t *testing.T) {
 			assert.NotEmpty(t, password)
 			assert.Nil(t, err)
 
-			tempmails, err := mail.GenerateTempMails(tc.oto.AttemptCount)
-			if err != nil {
-				logging.GetLogger().Error("an error occurred while generating temp mails", zap.String("error", err.Error()))
-				return
-			}
+			tempmails, _ := mail.GenerateTempMails(tc.oto.AttemptCount)
 
 			for _, temp := range tempmails {
 				err = Generate(&tc.oto, temp, password)
