@@ -4,8 +4,8 @@ var oreillyTrialOptions = &OreillyTrialOptions{}
 
 // OreillyTrialOptions contains frequent command line and application options.
 type OreillyTrialOptions struct {
-	// CreateUserUrl is the url of the user creation on Oreilly API
-	CreateUserUrl string
+	// CreateUserURL is the url of the user creation on Oreilly API
+	CreateUserURL string
 	// PasswordRandomLength is the length of the random generated username
 	PasswordRandomLength int
 	// BannerFilePath is the relative path to the banner file

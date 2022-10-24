@@ -27,7 +27,7 @@ func GeneratePassword(length int) (string, error) {
 
 	res := make([]byte, length)
 	for i := 0; i < length; i++ {
-		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(All))))
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(All)))) //nolint:gosec
 		if err != nil {
 			return "", err
 		}
