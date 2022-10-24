@@ -26,7 +26,7 @@ var (
 
 func init() {
 	opts = options.GetOreillyTrialOptions()
-	rootCmd.Flags().StringVarP(&opts.CreateUserUrl, "createUserUrl", "",
+	rootCmd.Flags().StringVarP(&opts.CreateUserURL, "createUserUrl", "",
 		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
 	rootCmd.Flags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
 		"length of the random generated password between 0 and 32")
@@ -34,12 +34,13 @@ func init() {
 		"relative path of the banner file")
 	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
 		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
-	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging library (debug, info, warn, error)")
+	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging "+
+		"library (debug, info, warn, error)")
 	rootCmd.Flags().BoolVarP(&opts.InteractiveMode, "interactiveMode", "", true, "boolean param that "+
 		"lets you restart the app after all failed attempts")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
-		logging.GetLogger().Fatalw("fatal error occured while hiding flag", "error", err.Error())
+		logging.GetLogger().Fatalw("fatal error occurred while hiding flag", "error", err.Error())
 	}
 }
 
@@ -58,12 +59,13 @@ This tool does couple of simple steps to provide free trial account for you`,
 		}
 
 		if err := logging.SetLogLevel(opts.LogLevel); err != nil {
-			logging.GetLogger().Errorw("an error occured while setting log level", "error", err.Error())
+			logging.GetLogger().Errorw("an error occurred while setting log level", "error", err.Error())
 			return err
 		}
 
 		logging.GetLogger().Infow("oreilly-trial is started", "appVersion", ver.GitVersion,
-			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate", ver.BuildDate)
+			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate",
+			ver.BuildDate)
 
 		var generateFunc = func() error {
 			var password string

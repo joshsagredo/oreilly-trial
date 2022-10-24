@@ -52,16 +52,16 @@ func Generate(opts *options.OreillyTrialOptions, mail, password string) error {
 	}
 
 	// prepare and make the request
-	if req, err = http.NewRequest("POST", opts.CreateUserUrl, bytes.NewBuffer(jsonData)); err != nil {
+	if req, err = http.NewRequest("POST", opts.CreateUserURL, bytes.NewBuffer(jsonData)); err != nil {
 		return errors.Wrap(err, "unable to prepare http request")
 	}
 
 	logger.Debug("trying to set request headers")
 	setRequestHeaders(req)
 
-	logger.Debug("sending request with http client", "url", opts.CreateUserUrl)
+	logger.Debug("sending request with http client", "url", opts.CreateUserURL)
 	if resp, err = client.Do(req); err != nil {
-		return errors.Wrapf(err, "unable to do http request to remote host %s", opts.CreateUserUrl)
+		return errors.Wrapf(err, "unable to do http request to remote host %s", opts.CreateUserURL)
 	}
 
 	defer func(body io.ReadCloser) {

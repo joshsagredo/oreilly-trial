@@ -30,7 +30,7 @@ func TestGenerateError(t *testing.T) {
 	}()
 
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        server.URL,
+		CreateUserURL:        server.URL,
 		PasswordRandomLength: 12,
 	}
 
@@ -44,7 +44,7 @@ func TestGenerateInvalidHost(t *testing.T) {
 	expectedError := "no such host"
 	url := "https://foo.example.com/"
 	oto := options.OreillyTrialOptions{
-		CreateUserUrl:        url,
+		CreateUserURL:        url,
 		PasswordRandomLength: 12,
 		AttemptCount:         15,
 	}
@@ -60,12 +60,12 @@ func TestGenerateInvalidRandom(t *testing.T) {
 		oto      options.OreillyTrialOptions
 	}{
 		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
+			CreateUserURL:        url,
 			PasswordRandomLength: 666,
 			AttemptCount:         15,
 		}},
 		{"case2", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
+			CreateUserURL:        url,
 			PasswordRandomLength: 665,
 			AttemptCount:         15,
 		}},
@@ -87,7 +87,7 @@ func TestGenerateValidArgs(t *testing.T) {
 		oto      options.OreillyTrialOptions
 	}{
 		{"case1", options.OreillyTrialOptions{
-			CreateUserUrl:        url,
+			CreateUserURL:        url,
 			PasswordRandomLength: 12,
 			AttemptCount:         30,
 		}},
