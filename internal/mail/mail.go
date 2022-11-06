@@ -29,7 +29,11 @@ func GetPossiblyValidDomains() ([]string, error) {
 		return possibleValidDomains, err
 	}
 
-	defer domainResp.Body.Close()
+	defer func() {
+		if err := domainResp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	body, err := io.ReadAll(domainResp.Body)
 	if err != nil {
 		return possibleValidDomains, err
@@ -73,7 +77,11 @@ func GenerateTempMail(domainID string) (string, error) {
 		return "", err
 	}
 
-	defer res.Body.Close()
+	defer func() {
+		if err := res.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return "", err
