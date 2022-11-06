@@ -19,7 +19,7 @@ var (
 func GetPossiblyValidDomains() ([]string, error) {
 	var possibleValidDomains []string
 	var domainRequestData = strings.NewReader("{\"query\":\"query domains { domains { id name introducedAt availableVia }}\",\"variables\":{}}")
-	logging.GetLogger().Infow("token print", token)
+	logging.GetLogger().Infow("token print", "token", token)
 	domainRequest, _ := http.NewRequest("POST", url, domainRequestData)
 	domainRequest.Header.Add("content-type", "application/json")
 	domainRequest.Header.Add("X-RapidAPI-Key", token)
