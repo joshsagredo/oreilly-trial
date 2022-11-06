@@ -21,7 +21,7 @@ func init() {
 
 // GeneratePassword generates a random string for username or password
 func GeneratePassword(length int) (string, error) {
-	if length > 32 {
+	if length < 8 || length > 32 {
 		return "", errors.New("invalid random value")
 	}
 

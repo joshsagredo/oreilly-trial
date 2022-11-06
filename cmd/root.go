@@ -2,11 +2,9 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
-	"github.com/manifoldco/promptui"
 	"os"
 	"strings"
 
@@ -16,7 +14,6 @@ import (
 	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/dimiro1/banner"
 	"github.com/spf13/cobra"
-	_ "go.uber.org/automaxprocs"
 )
 
 var (
@@ -32,12 +29,8 @@ func init() {
 		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
-	rootCmd.Flags().IntVarP(&opts.AttemptCount, "attemptCount", "", 15,
-		"attempt count of how many times oreilly-trial will try to register again after failed attempts")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging "+
 		"library (debug, info, warn, error)")
-	rootCmd.Flags().BoolVarP(&opts.InteractiveMode, "interactiveMode", "", true, "boolean param that "+
-		"lets you restart the app after all failed attempts")
 
 	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
 		logging.GetLogger().Fatalw("fatal error occurred while hiding flag", "error", err.Error())
@@ -67,58 +60,39 @@ This tool does couple of simple steps to provide free trial account for you`,
 			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate",
 			ver.BuildDate)
 
-		var generateFunc = func() error {
-			var password string
-			var err error
-			if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
-				logging.GetLogger().Errorw("unable to generate password", "error", err.Error())
-				return err
-			}
-
-			tempmails, err := mail.GenerateTempMails(opts.AttemptCount)
-			if err != nil {
-				logging.GetLogger().Errorw("an error occurred while generating temp mails", "error", err.Error())
-				return err
-			}
-
-			for i, mail := range tempmails {
-				err := oreilly.Generate(opts, mail, password)
-				if err == nil {
-					logging.GetLogger().Infow("trial account successfully created", "email", mail, "password", password,
-						"attempt", i+1)
-					return nil
-				}
-
-				logging.GetLogger().Errorw("an error occurred while generating user with tempmail", "attempt", i+1,
-					"mail", mail, "error", err.Error())
-			}
-
-			err = errors.New("all attempts are failed, please try to increase attempt count with --attemptCount flag")
-			logging.GetLogger().Errorw(err.Error(), "attemptCount", opts.AttemptCount)
-
+		var password string
+		var err error
+		if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
+			logging.GetLogger().Errorw("unable to generate password", "error", err.Error())
 			return err
 		}
 
-		err := generateFunc()
-		if err != nil && opts.InteractiveMode {
-			fmt.Println()
-			for err != nil {
-				prompt := promptui.Select{
-					Label: "Would you like to try again?",
-					Items: []string{"Yes please!", "No thanks!"},
-				}
-
-				_, result, _ := prompt.Run()
-				if result == "Yes please!" {
-					err = generateFunc()
-					continue
-				}
-
-				break
-			}
+		validDomains, err := mail.GetPossiblyValidDomains()
+		if err != nil {
+			logging.GetLogger().Errorw("an error occurred while fetching valid domains",
+				"error", err.Error())
+			return err
 		}
 
-		return err
+		for i, domain := range validDomains {
+			email, err := mail.GenerateTempMail(domain)
+			if err != nil {
+				logging.GetLogger().Errorw("an error occurred while generating email with specific domain",
+					"domain", domain, "error", err.Error())
+				continue
+			}
+
+			if err := oreilly.Generate(opts, email, password); err != nil {
+				logging.GetLogger().Errorw("an error occurred while generating user with tempmail", "attempt", i+1,
+					"mail", email, "domain", domain, "error", err.Error())
+				continue
+			}
+
+			logging.GetLogger().Infow("trial account successfully created", "email", email, "password", password)
+			return nil
+		}
+
+		return errors.New("all attempts failed")
 	},
 }
 

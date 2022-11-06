@@ -5,41 +5,82 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/pkg/errors"
 )
 
-var url = "https://www.1secmail.com/api/v1/?action=genRandomMailbox"
+var (
+	url   = "https://dropmail.p.rapidapi.com/"
+	token = "none"
+)
 
-func GenerateTempMails(count int) ([]string, error) {
-	var tempmails []string
-
-	if count > 20 || count < 1 {
-		return tempmails, errors.New("invalid attempt count, must be between 1 and 20")
-	}
-
-	req, _ := http.NewRequest("GET", fmt.Sprintf("%s&count=%d", url, count), nil)
-
-	res, err := http.DefaultClient.Do(req)
+func GetPossiblyValidDomains() ([]string, error) {
+	var possibleValidDomains []string
+	var domainRequestData = strings.NewReader("{\"query\":\"query domains { domains { id name introducedAt availableVia }}\",\"variables\":{}}")
+	domainRequest, _ := http.NewRequest("POST", url, domainRequestData)
+	domainRequest.Header.Add("content-type", "application/json")
+	domainRequest.Header.Add("X-RapidAPI-Key", token)
+	domainRequest.Header.Add("X-RapidAPI-Host", "dropmail.p.rapidapi.com")
+	domainResp, err := http.DefaultClient.Do(domainRequest)
 	if err != nil {
-		return tempmails, errors.Wrap(err, "unable to make request")
+		return possibleValidDomains, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(res.Body)
-	body, _ := io.ReadAll(res.Body)
-
-	if res.StatusCode == 200 {
-		if err := json.Unmarshal(body, &tempmails); err != nil {
-			return tempmails, errors.Wrap(err, "unable to unmarshal json response")
-		}
-	} else {
-		return tempmails, errors.New("API returned non-200 response")
+	defer domainResp.Body.Close()
+	body, err := io.ReadAll(domainResp.Body)
+	if err != nil {
+		return possibleValidDomains, err
 	}
 
-	return tempmails, nil
+	var domainResponse DomainResponse
+	if err := json.Unmarshal(body, &domainResponse); err != nil {
+		return possibleValidDomains, err
+	}
+
+	for _, v := range domainResponse.Domains {
+		if v.Name == "mimimail.me" {
+			possibleValidDomains = append(possibleValidDomains, v.ID)
+		}
+		// TODO: find more valid domains
+	}
+
+	if len(possibleValidDomains) == 0 {
+		return possibleValidDomains, errors.New("empty list of valid domains")
+	}
+
+	return possibleValidDomains, nil
+}
+
+func GenerateTempMail(domainID string) (string, error) {
+	var emailRequestData = strings.NewReader(fmt.Sprintf("{\"query\":\"mutation introduceSession($input: IntroduceSessionInput) { "+
+		"introduceSession(input: $input) { "+
+		"id "+
+		"addresses { "+
+		"address "+
+		"} "+
+		"expiresAt "+
+		"} "+
+		"}\",\"variables\":{\"input\":{\"withAddress\":true,\"domainId\":\"%s\"}}}", domainID))
+	emailRequest, _ := http.NewRequest("POST", url, emailRequestData)
+	emailRequest.Header.Add("content-type", "application/json")
+	emailRequest.Header.Add("X-RapidAPI-Key", "6a3f9418famshdeeac0fe2f34a7cp1fd1c1jsn26245029950d")
+	emailRequest.Header.Add("X-RapidAPI-Host", "dropmail.p.rapidapi.com")
+	res, err := http.DefaultClient.Do(emailRequest)
+	if err != nil {
+		return "", err
+	}
+
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var resp EmailResponse
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return "", err
+	}
+
+	return resp.Addresses[0].Address, nil
 }

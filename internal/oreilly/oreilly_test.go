@@ -46,7 +46,6 @@ func TestGenerateInvalidHost(t *testing.T) {
 	oto := options.OreillyTrialOptions{
 		CreateUserURL:        url,
 		PasswordRandomLength: 12,
-		AttemptCount:         15,
 	}
 
 	err := Generate(&oto, "notreallyrequiredmail@example.com", "123123123123")
@@ -62,12 +61,10 @@ func TestGenerateInvalidRandom(t *testing.T) {
 		{"case1", options.OreillyTrialOptions{
 			CreateUserURL:        url,
 			PasswordRandomLength: 666,
-			AttemptCount:         15,
 		}},
 		{"case2", options.OreillyTrialOptions{
 			CreateUserURL:        url,
 			PasswordRandomLength: 665,
-			AttemptCount:         15,
 		}},
 	}
 
@@ -89,7 +86,6 @@ func TestGenerateValidArgs(t *testing.T) {
 		{"case1", options.OreillyTrialOptions{
 			CreateUserURL:        url,
 			PasswordRandomLength: 12,
-			AttemptCount:         30,
 		}},
 	}
 
@@ -99,10 +95,14 @@ func TestGenerateValidArgs(t *testing.T) {
 			assert.NotEmpty(t, password)
 			assert.Nil(t, err)
 
-			tempmails, _ := mail.GenerateTempMails(tc.oto.AttemptCount)
+			domains, _ := mail.GetPossiblyValidDomains()
 
-			for _, temp := range tempmails {
-				err = Generate(&tc.oto, temp, password)
+			for _, id := range domains {
+				email, err := mail.GenerateTempMail(id)
+				assert.NotEmpty(t, email)
+				assert.Nil(t, err)
+
+				err = Generate(&tc.oto, email, password)
 
 				if err == nil {
 					break
