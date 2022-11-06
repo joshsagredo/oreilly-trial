@@ -98,11 +98,11 @@ run-vet:
 .PHONY: test
 test: tidy
 	$(info starting the test for whole module...)
-	go test -failfast -vet=off -race ./... || (echo an error while testing, exiting!; sh -c 'exit 1';)
+	go test -failfast -vet=off -race ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
 
 .PHONY: test-with-coverage
 test-with-coverage: tidy
-	go test ./... -race -coverprofile=coverage.txt -covermode=atomic
+	go test ./... -race -coverprofile=coverage.txt -covermode=atomic -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
 
 .PHONY: update
 update: tidy
