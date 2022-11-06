@@ -99,6 +99,8 @@ jobs:
           go-version-file: "go.mod"
       - name: Coverage Test
         run: make -s test-with-coverage
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
