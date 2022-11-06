@@ -51,6 +51,8 @@ jobs:
           go-version-file: "go.mod"
       - name: Test
         run: make -s test
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
 
   gosec:
     runs-on: ubuntu-latest
@@ -115,6 +117,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
         with:
           args: >
             -Dproject.settings=build/ci/sonar-project.properties
@@ -142,6 +145,8 @@ jobs:
           go-version-file: "go.mod"
       - name: Test
         run: make -s build
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
 
   tag:
     runs-on: ubuntu-latest
@@ -197,3 +202,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
