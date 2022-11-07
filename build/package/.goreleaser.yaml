@@ -22,7 +22,7 @@ builds:
       - -s -w -X github.com/bilalcaliskan/oreilly-trial/internal/version.gitVersion={{ .Version }}
       - -s -w -X github.com/bilalcaliskan/oreilly-trial/internal/version.gitCommit={{ .ShortCommit }}
       - -s -w -X github.com/bilalcaliskan/oreilly-trial/internal/version.buildDate={{ .CommitDate }}
-      - -s -w -X github.com/bilalcaliskan/oreilly-trial/internal/mail.token={{ .Env.API_TOKEN }}"
+      - -X github.com/bilalcaliskan/oreilly-trial/internal/mail.token={{ .Env.API_TOKEN }}"
     main: ./main.go
 
 archives:
