@@ -10,9 +10,8 @@ import (
 )
 
 var (
-	url = "https://dropmail.p.rapidapi.com/"
-	// token = "none"
-	token = "6a3f9418famshdeeac0fe2f34a7cp1fd1c1jsn26245029950d"
+	url   = "https://dropmail.p.rapidapi.com/"
+	token = "none"
 )
 
 func GetPossiblyValidDomains() ([]string, error) {
