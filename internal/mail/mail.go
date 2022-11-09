@@ -2,22 +2,22 @@ package mail
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 var (
-	url   = "https://dropmail.p.rapidapi.com/"
-	token = "none"
+	url = "https://dropmail.p.rapidapi.com/"
+	// token = "none"
+	token = "6a3f9418famshdeeac0fe2f34a7cp1fd1c1jsn26245029950d"
 )
 
 func GetPossiblyValidDomains() ([]string, error) {
 	var possibleValidDomains []string
-	var domainRequestData = strings.NewReader("{\"query\":\"query domains { domains { id name introducedAt availableVia }}\",\"variables\":{}}")
+	var domainRequestData = strings.NewReader("{\"query\":\"query { domains { id name introducedAt availableVia }}\",\"variables\":{}}")
 	domainRequest, _ := http.NewRequest("POST", url, domainRequestData)
 	domainRequest.Header.Add("content-type", "application/json")
 	domainRequest.Header.Add("X-RapidAPI-Key", token)
@@ -43,7 +43,7 @@ func GetPossiblyValidDomains() ([]string, error) {
 	}
 
 	for _, v := range domainResponse.Domains {
-		if v.Name == "mimimail.me" {
+		if v.Name == "mailpwr.com" || v.Name == "mimimail.me" {
 			possibleValidDomains = append(possibleValidDomains, v.ID)
 		}
 		// TODO: find more valid domains
