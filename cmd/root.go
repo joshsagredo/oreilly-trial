@@ -53,11 +53,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate",
 			ver.BuildDate)
 
-		if err := generator.RunGenerator(); err != nil {
-			return err
-		}
-
-		return nil
+		return generator.RunGenerator()
 	},
 }
 

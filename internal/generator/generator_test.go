@@ -3,18 +3,12 @@ package generator
 import (
 	"fmt"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
-	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"sync"
 	"testing"
 )
-
-var testOpts = &options.OreillyTrialOptions{
-	BannerFilePath: "build/ci/banner.txt",
-	LogLevel:       "info",
-}
 
 func TestRunGenerator_DomainError(t *testing.T) {
 	apiURLOrig := mail.ApiURL //nolint:typecheck
@@ -133,6 +127,6 @@ func (r *responseWriter) getResp() string {
 func handlerResponse(rr *responseWriter) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(rr.getResp()))
+		_, _ = w.Write([]byte(rr.getResp()))
 	})
 }
