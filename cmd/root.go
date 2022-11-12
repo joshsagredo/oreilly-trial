@@ -1,10 +1,7 @@
 package cmd
 
 import (
-	"errors"
-	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
-	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
-	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+	"github.com/bilalcaliskan/oreilly-trial/internal/generator"
 	"os"
 	"strings"
 
@@ -23,10 +20,6 @@ var (
 
 func init() {
 	opts = options.GetOreillyTrialOptions()
-	rootCmd.Flags().StringVarP(&opts.CreateUserURL, "createUserUrl", "",
-		"https://learning.oreilly.com/api/v1/registration/individual/", "url of the user creation on Oreilly API")
-	rootCmd.Flags().IntVarP(&opts.PasswordRandomLength, "passwordRandomLength", "", 16,
-		"length of the random generated password between 0 and 32")
 	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
 		"relative path of the banner file")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging "+
@@ -60,39 +53,7 @@ This tool does couple of simple steps to provide free trial account for you`,
 			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate",
 			ver.BuildDate)
 
-		var password string
-		var err error
-		if password, err = random.GeneratePassword(opts.PasswordRandomLength); err != nil {
-			logging.GetLogger().Errorw("unable to generate password", "error", err.Error())
-			return err
-		}
-
-		validDomains, err := mail.GetPossiblyValidDomains()
-		if err != nil {
-			logging.GetLogger().Errorw("an error occurred while fetching valid domains",
-				"error", err.Error())
-			return err
-		}
-
-		for i, domain := range validDomains {
-			email, err := mail.GenerateTempMail(domain)
-			if err != nil {
-				logging.GetLogger().Errorw("an error occurred while generating email with specific domain",
-					"domain", domain, "error", err.Error())
-				continue
-			}
-
-			if err := oreilly.Generate(opts, email, password); err != nil {
-				logging.GetLogger().Errorw("an error occurred while generating user with tempmail", "attempt", i+1,
-					"mail", email, "domain", domain, "error", err.Error())
-				continue
-			}
-
-			logging.GetLogger().Infow("trial account successfully created", "email", email, "password", password)
-			return nil
-		}
-
-		return errors.New("all attempts failed")
+		return generator.RunGenerator()
 	},
 }
 

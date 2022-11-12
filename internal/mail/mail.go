@@ -10,17 +10,18 @@ import (
 )
 
 var (
-	url   = "https://dropmail.p.rapidapi.com/"
-	token = "none"
+	ApiURL                 = "https://dropmail.p.rapidapi.com/"
+	token                  = "none"
+	PredefinedValidDomains = []string{"mailpwr.com", "mimimail.me"}
 )
 
 func GetPossiblyValidDomains() ([]string, error) {
 	var possibleValidDomains []string
-	var domainRequestData = strings.NewReader("{\"query\":\"query { domains { id name introducedAt availableVia }}\",\"variables\":{}}")
-	domainRequest, _ := http.NewRequest("POST", url, domainRequestData)
-	domainRequest.Header.Add("content-type", "application/json")
+	var domainRequestData = strings.NewReader(domainRequestQuery)
+	domainRequest, _ := http.NewRequest("POST", ApiURL, domainRequestData)
+	domainRequest.Header.Add("content-type", contentType)
 	domainRequest.Header.Add("X-RapidAPI-Key", token)
-	domainRequest.Header.Add("X-RapidAPI-Host", "dropmail.p.rapidapi.com")
+	domainRequest.Header.Add("X-RapidAPI-Host", hostHeader)
 	domainResp, err := http.DefaultClient.Do(domainRequest)
 	if err != nil {
 		return possibleValidDomains, err
@@ -36,16 +37,17 @@ func GetPossiblyValidDomains() ([]string, error) {
 		return possibleValidDomains, err
 	}
 
+	fmt.Println(string(body))
+
 	var domainResponse DomainResponse
 	if err := json.Unmarshal(body, &domainResponse); err != nil {
 		return possibleValidDomains, err
 	}
 
 	for _, v := range domainResponse.Domains {
-		if v.Name == "mailpwr.com" || v.Name == "mimimail.me" {
+		if contains(PredefinedValidDomains, v.Name) {
 			possibleValidDomains = append(possibleValidDomains, v.ID)
 		}
-		// TODO: find more valid domains
 	}
 
 	if len(possibleValidDomains) == 0 {
@@ -56,19 +58,11 @@ func GetPossiblyValidDomains() ([]string, error) {
 }
 
 func GenerateTempMail(domainID string) (string, error) {
-	var emailRequestData = strings.NewReader(fmt.Sprintf("{\"query\":\"mutation introduceSession($input: IntroduceSessionInput) { "+
-		"introduceSession(input: $input) { "+
-		"id "+
-		"addresses { "+
-		"address "+
-		"} "+
-		"expiresAt "+
-		"} "+
-		"}\",\"variables\":{\"input\":{\"withAddress\":true,\"domainId\":\"%s\"}}}", domainID))
-	emailRequest, _ := http.NewRequest("POST", url, emailRequestData)
-	emailRequest.Header.Add("content-type", "application/json")
-	emailRequest.Header.Add("X-RapidAPI-Key", "6a3f9418famshdeeac0fe2f34a7cp1fd1c1jsn26245029950d")
-	emailRequest.Header.Add("X-RapidAPI-Host", "dropmail.p.rapidapi.com")
+	var emailRequestData = strings.NewReader(fmt.Sprintf(emailRequestQuery, domainID))
+	emailRequest, _ := http.NewRequest("POST", ApiURL, emailRequestData)
+	emailRequest.Header.Add("content-type", contentType)
+	emailRequest.Header.Add("X-RapidAPI-Key", token)
+	emailRequest.Header.Add("X-RapidAPI-Host", hostHeader)
 	res, err := http.DefaultClient.Do(emailRequest)
 	if err != nil {
 		return "", err
@@ -84,9 +78,15 @@ func GenerateTempMail(domainID string) (string, error) {
 		return "", err
 	}
 
+	fmt.Println(string(body))
+
 	var resp EmailResponse
 	if err := json.Unmarshal(body, &resp); err != nil {
 		return "", err
+	}
+
+	if len(resp.Addresses) == 0 {
+		return "", errors.New("no email returned from API")
 	}
 
 	return resp.Addresses[0].Address, nil

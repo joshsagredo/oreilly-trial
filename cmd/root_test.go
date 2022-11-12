@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/stretchr/testify/assert"
-	"strconv"
 	"testing"
 )
 
@@ -45,18 +44,4 @@ func TestExecuteWrongLogLevel(t *testing.T) {
 	assert.NotNil(t, err)
 
 	_ = rootCmd.Flags().Set("logLevel", logLevelOrig)
-}
-
-func TestExecuteWrongPasswordLength(t *testing.T) {
-	passwordLengthOrig, _ := rootCmd.Flags().GetInt("passwordRandomLength")
-	assert.NotNil(t, passwordLengthOrig)
-	assert.NotEmpty(t, passwordLengthOrig)
-
-	err := rootCmd.Flags().Set("passwordRandomLength", "444")
-	assert.Nil(t, err)
-
-	err = rootCmd.Execute()
-	assert.NotNil(t, err)
-
-	_ = rootCmd.Flags().Set("passwordRandomLength", strconv.FormatInt(int64(passwordLengthOrig), 10))
 }

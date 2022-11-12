@@ -7,12 +7,9 @@ import (
 	"testing"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
-	"github.com/bilalcaliskan/oreilly-trial/internal/options"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 	"github.com/stretchr/testify/assert"
 )
-
-var url = "https://learning.oreilly.com/api/v1/registration/individual/"
 
 // TestGenerateError function spins up a fake httpserver and simulates a 400 bad request response
 func TestGenerateError(t *testing.T) {
@@ -29,69 +26,40 @@ func TestGenerateError(t *testing.T) {
 		server.Close()
 	}()
 
-	oto := options.OreillyTrialOptions{
-		CreateUserURL:        server.URL,
-		PasswordRandomLength: 12,
-	}
-
-	err := Generate(&oto, "notreallyrequiredmail@example.com", "123123123123")
+	apiURLOrig := apiURL
+	apiURL = server.URL
+	err := Generate("notreallyrequiredmail@example.com", "123123123123")
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
+
+	apiURL = apiURLOrig
 }
 
 // TestGenerateInvalidHost function tests if Generate function fails on broken Host argument
 func TestGenerateInvalidHost(t *testing.T) {
 	expectedError := "no such host"
-	url := "https://foo.example.com/"
-	oto := options.OreillyTrialOptions{
-		CreateUserURL:        url,
-		PasswordRandomLength: 12,
-	}
 
-	err := Generate(&oto, "notreallyrequiredmail@example.com", "123123123123")
+	apiURLOrig := apiURL
+	apiURL = "https://foo.example.com/"
+
+	err := Generate("notreallyrequiredmail@example.com", "123123123123")
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
-}
 
-func TestGenerateInvalidRandom(t *testing.T) {
-	cases := []struct {
-		caseName string
-		oto      options.OreillyTrialOptions
-	}{
-		{"case1", options.OreillyTrialOptions{
-			CreateUserURL:        url,
-			PasswordRandomLength: 666,
-		}},
-		{"case2", options.OreillyTrialOptions{
-			CreateUserURL:        url,
-			PasswordRandomLength: 665,
-		}},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.caseName, func(t *testing.T) {
-			err := Generate(&tc.oto, "notreallyrequiredmail@example.com", "123123123123")
-			assert.NotNil(t, err)
-			assert.NotNil(t, err)
-		})
-	}
+	apiURL = apiURLOrig
 }
 
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
 func TestGenerateValidArgs(t *testing.T) {
 	cases := []struct {
 		caseName string
-		oto      options.OreillyTrialOptions
 	}{
-		{"case1", options.OreillyTrialOptions{
-			CreateUserURL:        url,
-			PasswordRandomLength: 12,
-		}},
+		{"case1"},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			password, err := random.GeneratePassword(tc.oto.PasswordRandomLength)
+			password, err := random.GeneratePassword()
 			assert.NotEmpty(t, password)
 			assert.Nil(t, err)
 
@@ -102,7 +70,7 @@ func TestGenerateValidArgs(t *testing.T) {
 				assert.NotEmpty(t, email)
 				assert.Nil(t, err)
 
-				err = Generate(&tc.oto, email, password)
+				err = Generate(email, password)
 
 				if err == nil {
 					break
