@@ -1,5 +1,20 @@
 package mail
 
+const (
+	emailRequestQuery = "{\"query\":\"mutation introduceSession($input: IntroduceSessionInput) { " +
+		"introduceSession(input: $input) { " +
+		"id " +
+		"addresses { " +
+		"address " +
+		"} " +
+		"expiresAt " +
+		"} " +
+		"}\",\"variables\":{\"input\":{\"withAddress\":true,\"domainId\":\"%s\"}}}"
+	domainRequestQuery = "{\"query\":\"query { domains { id name introducedAt availableVia }}\",\"variables\":{}}"
+	hostHeader         = "dropmail.p.rapidapi.com"
+	contentType        = "application/json"
+)
+
 type DomainResponse struct {
 	DomainData `json:"data"`
 }
