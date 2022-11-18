@@ -2,8 +2,14 @@ package cmd
 
 import (
 	"github.com/bilalcaliskan/oreilly-trial/internal/generator"
+	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
+	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
+	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+	"github.com/manifoldco/promptui"
 	"os"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 
@@ -53,7 +59,49 @@ This tool does couple of simple steps to provide free trial account for you`,
 			"goVersion", ver.GoVersion, "goOS", ver.GoOs, "goArch", ver.GoArch, "gitCommit", ver.GitCommit, "buildDate",
 			ver.BuildDate)
 
-		return generator.RunGenerator()
+		if err := generator.RunGenerator(); err != nil {
+			prompt := promptui.Select{
+				Label: "An error occurred while generating Oreilly account with temporary mail, would you like to provide your own valid email address?",
+				Items: []string{"Yes please!", "No thanks!"},
+			}
+			_, result, _ := prompt.Run()
+			switch result {
+			case "Yes please!":
+				prompt := promptui.Prompt{
+					Label: "Your valid email address",
+					Validate: func(s string) error {
+						if !mail.IsValidEmail(s) {
+							return errors.Wrap(err, "no valid email provided by user")
+						}
+
+						return nil
+					},
+				}
+
+				mail, _ := prompt.Run()
+
+				password, err := random.GeneratePassword()
+				if err != nil {
+					logging.GetLogger().Errorw("an error occurred while generating password",
+						"error", err.Error())
+					return errors.Wrap(err, "an error occurred while generating password")
+				}
+
+				if err := oreilly.Generate(mail, password); err != nil {
+					logging.GetLogger().Errorw("an error occurred while generating user with specific email",
+						"mail", mail, "error", err.Error())
+					return errors.Wrap(err, "an error occurred while generating oreilly")
+				}
+
+				logging.GetLogger().Infow("trial account successfully created", "email", mail, "password", password)
+
+				return nil
+			case "No thanks!":
+				return err
+			}
+		}
+
+		return nil
 	},
 }
 
