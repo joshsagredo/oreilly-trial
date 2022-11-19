@@ -37,8 +37,6 @@ func GetPossiblyValidDomains() ([]string, error) {
 		return possibleValidDomains, err
 	}
 
-	fmt.Println(string(body))
-
 	var domainResponse DomainResponse
 	if err := json.Unmarshal(body, &domainResponse); err != nil {
 		return possibleValidDomains, err
