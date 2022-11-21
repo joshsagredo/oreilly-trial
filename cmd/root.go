@@ -1,13 +1,14 @@
 package cmd
 
 import (
+	"os"
+	"strings"
+
 	"github.com/bilalcaliskan/oreilly-trial/internal/generator"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
 	"github.com/manifoldco/promptui"
-	"os"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -26,7 +27,7 @@ var (
 
 func init() {
 	opts = options.GetOreillyTrialOptions()
-	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "build/ci/banner.txt",
+	rootCmd.Flags().StringVarP(&opts.BannerFilePath, "bannerFilePath", "", "banner.txt",
 		"relative path of the banner file")
 	rootCmd.Flags().StringVarP(&opts.LogLevel, "logLevel", "", "info", "log level logging "+
 		"library (debug, info, warn, error)")
