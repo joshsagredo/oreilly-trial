@@ -76,8 +76,6 @@ func GenerateTempMail(domainID string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println(string(body))
-
 	var resp EmailResponse
 	if err := json.Unmarshal(body, &resp); err != nil {
 		return "", err
