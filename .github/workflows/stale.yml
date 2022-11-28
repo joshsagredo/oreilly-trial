@@ -16,13 +16,13 @@ jobs:
           - After 180d of inactivity, lifecycle/stale is applied.
           - After 90d of inactivity since lifecycle/stale was applied, lifecycle/rotten is applied and the issue is closed.
           You can:
-          - Make a comment to remove the stale label and show your support. The 60 days reset.
+          - Make a comment to remove the stale label and show your support. The 180d days reset.
           - If an issue has lifecycle/rotten and is closed, comment and ask maintainers if they'd be interseted in reopening"
           stale-pr-message: "This bot triages issues and PRs according to the following rules:
           - After 180d of inactivity, lifecycle/stale is applied.
           - After 90d of inactivity since lifecycle/stale was applied, lifecycle/rotten is applied and the PR is closed.
           You can:
-          - Make a comment to remove the stale label and show your support. The 60 days reset.
+          - Make a comment to remove the stale label and show your support. The 180d days reset.
           - If a PR has lifecycle/rotten and is closed, comment and ask maintainers if they'd be interseted in reopening."
           days-before-stale: 180
           days-before-close: 90
