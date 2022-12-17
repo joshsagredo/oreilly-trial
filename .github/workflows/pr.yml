@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: "go.mod"
+          cache: true
       - name: Lint code
         run: make -s lint
       - name: Clean downloaded binaries
@@ -31,6 +32,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: "go.mod"
+          cache: true
       - name: Run fmt
         run: make -s fmt
       - name: Clean downloaded binaries
@@ -48,6 +50,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: "go.mod"
+          cache: true
       - name: Test
         run: make -s test
         env:
@@ -97,6 +100,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: "go.mod"
+          cache: true
       - name: Coverage Test
         run: make -s test-with-coverage
         env:
@@ -110,11 +114,11 @@ jobs:
         with:
           args: >
             -Dproject.settings=build/ci/sonar-project.properties
-#      - name: SonarQube Quality Gate check
-#        uses: sonarsource/sonarqube-quality-gate-action@master
-#        timeout-minutes: 5
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
     strategy:
@@ -128,6 +132,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: "go.mod"
+          cache: true
       - name: Test
         run: make -s build
         env:
