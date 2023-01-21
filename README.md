@@ -15,9 +15,9 @@
 As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 
 This tool does couple of simple steps to provide free trial account for you:
-  - Creates temp mails(**--attemptCount**) over API of www.1secmail.com
+  - Creates temp mail with specific domains over https://dropmail.p.rapidapi.com/
   - Tries to register with created temp mails to https://learning.oreilly.com/
-  - Prints the login information to console and then exit.
+  - Prints the login information to console and then exits.
 
 ## Configuration
 oreilly-trial can be customized with several command line arguments:
