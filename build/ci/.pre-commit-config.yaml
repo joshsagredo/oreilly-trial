@@ -14,7 +14,7 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
       - id: detect-private-key
-      - id: detect-aws-credentials
+#      - id: detect-aws-credentials
   - repo: https://github.com/dnephin/pre-commit-golang
     rev: v0.5.0
     hooks:

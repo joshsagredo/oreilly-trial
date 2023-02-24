@@ -27,14 +27,14 @@ jobs:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Enable auto-merge for Dependabot PRs for github-actions package ecosystem
-        if: ${{ steps.dependabot-metadata.outputs.package-ecosystem == 'github-actions' }}
+        if: ${{ steps.dependabot-metadata.outputs.package-ecosystem == 'github_actions' }}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Enable auto-merge for Dependabot PRs for gomod package ecosystem
-        if: ${{ steps.dependabot-metadata.outputs.package-ecosystem == 'gomod' && (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor' || steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch') }}
+      - name: Enable auto-merge for Dependabot PRs for go_modules package ecosystem
+        if: ${{ steps.dependabot-metadata.outputs.package-ecosystem == 'go_modules' && steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' }}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}
