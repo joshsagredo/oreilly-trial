@@ -1,6 +1,7 @@
 package random
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,10 +17,11 @@ func TestGeneratePassword(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.caseName, func(t *testing.T) {
-			username, err := GeneratePassword()
+			password, err := GeneratePassword()
+			fmt.Println(password)
 			assert.Nil(t, err)
-			assert.NotEmpty(t, username)
-			assert.Len(t, username, randomLength)
+			assert.NotEmpty(t, password)
+			assert.Len(t, password, randomLength)
 		})
 	}
 }
