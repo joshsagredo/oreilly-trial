@@ -1,8 +1,8 @@
 package random
 
 import (
-	mathRand "math/rand"
-	"time"
+	"crypto/rand"
+	"math/big"
 )
 
 const (
@@ -15,12 +15,14 @@ const (
 
 // GeneratePassword generates a random string for username or password
 func GeneratePassword() (string, error) {
-	r := mathRand.New(mathRand.NewSource(time.Now().UnixNano()))
+	//r := mathRand.New(mathRand.NewSource(time.Now().UnixNano()))
 	res := make([]byte, randomLength)
 	for i := 0; i < randomLength; i++ {
-		num := r.Intn(len(all))
-
-		res[i] = all[num]
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(all))))
+		if err != nil {
+			return "", err
+		}
+		res[i] = all[num.Int64()]
 	}
 
 	return string(res), nil
