@@ -11,7 +11,7 @@ import (
 
 var (
 	ApiURL                 = "https://dropmail.p.rapidapi.com/"
-	token                  = "6a3f9418famshdeeac0fe2f34a7cp1fd1c1jsn26245029950d"
+	token                  = "none"
 	PredefinedValidDomains = []string{"mailpwr.com", "mimimail.me"}
 )
 
