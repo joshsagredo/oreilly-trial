@@ -26,9 +26,9 @@ Usage:
   oreilly-trial [flags]
 
 Flags:
-  -h, --help              help for oreilly-trial
-      --logLevel string   log level logging library (debug, info, warn, error) (default "info")
-  -v, --version           version for oreilly-trial
+  -h, --help      help for oreilly-trial
+      --verbose   verbose output of the logging library as 'debug' (default false)
+  -v, --version   version for oreilly-trial
 ```
 
 > By default, oreilly-trial attempts to create trial account **--attemptCount** times. Default value of that flag is 10, if you can not create trial account in **--attemptCount** attempts, please increase that value in the range of 1-20.
