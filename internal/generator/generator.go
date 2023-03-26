@@ -9,36 +9,47 @@ import (
 )
 
 func RunGenerator() error {
+	logger := logging.GetLogger()
+
 	var password string
 	var err error
 
 	if password, err = random.GeneratePassword(); err != nil {
-		logging.GetLogger().Errorw("unable to generate password", "error", err.Error())
+		logger.Error().Str("error", err.Error()).Msg("unable to generate password")
 		return err
 	}
 
 	validDomains, err := mail.GetPossiblyValidDomains()
 	if err != nil {
-		logging.GetLogger().Errorw("an error occurred while fetching valid domains",
-			"error", err.Error())
+		logger.Error().Str("error", err.Error()).Msg("an error occurred while fetching valid domains")
 		return err
 	}
 
 	for i, domain := range validDomains {
 		email, err := mail.GenerateTempMail(domain)
 		if err != nil {
-			logging.GetLogger().Errorw("an error occurred while generating email with specific domain",
-				"domain", domain, "error", err.Error())
+			logger.Error().
+				Str("error", err.Error()).
+				Str("domain", domain).
+				Msg("an error occurred while generating email with specific domain")
 			continue
 		}
 
-		if err := oreilly.Generate(email, password); err != nil {
-			logging.GetLogger().Errorw("an error occurred while generating user with tempmail", "attempt", i+1,
-				"mail", email, "domain", domain, "error", err.Error())
+		if err := oreilly.Generate(email, password, logger); err != nil {
+			logger.Warn().
+				Str("error", err.Error()).
+				Str("domain", domain).
+				Str("mail", email).
+				Int("attempt", i+1).
+				Msg("an error occurred while generating email with specific domain")
 			continue
 		}
 
-		logging.GetLogger().Infow("trial account successfully created", "email", email, "password", password)
+		logger.Info().
+			Str("email", email).
+			Str("password", password).
+			Msg("trial account successfully created")
+
 		return nil
 	}
 

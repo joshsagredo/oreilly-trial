@@ -3,27 +3,24 @@ package oreilly
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/rs/zerolog"
 	"io"
 	"net/http"
 
-	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 var (
-	logger *zap.SugaredLogger
 	client *http.Client
 	apiURL = "https://learning.oreilly.com/api/v1/registration/individual/"
 )
 
 func init() {
-	logger = logging.GetLogger()
 	client = &http.Client{}
 }
 
 // Generate does the heavy lifting, communicates with the Oreilly API
-func Generate(mail, password string) error {
+func Generate(mail, password string, logger zerolog.Logger) error {
 	var (
 		jsonData []byte
 		req      *http.Request
@@ -56,10 +53,10 @@ func Generate(mail, password string) error {
 		return errors.Wrap(err, "unable to prepare http request")
 	}
 
-	logger.Debug("trying to set request headers")
+	logger.Debug().Msg("trying to set request headers")
 	setRequestHeaders(req)
 
-	logger.Debug("sending request with http client", "url", apiURL)
+	logger.Debug().Str("url", apiURL).Msg("sending request with http client")
 	if resp, err = client.Do(req); err != nil {
 		return errors.Wrapf(err, "unable to do http request to remote host %s", apiURL)
 	}

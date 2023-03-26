@@ -1,7 +1,8 @@
-package cmd
+package root
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
 )
 
@@ -32,16 +33,16 @@ func TestExecuteMissingBannerFile(t *testing.T) {
 	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 }
 
-func TestExecuteWrongLogLevel(t *testing.T) {
-	logLevelOrig, _ := rootCmd.Flags().GetString("logLevel")
-	assert.NotNil(t, logLevelOrig)
-	assert.NotEmpty(t, logLevelOrig)
+func TestExecuteVerbose(t *testing.T) {
+	verboseOrig, err := rootCmd.Flags().GetBool("verbose")
+	assert.Nil(t, err)
+	assert.False(t, verboseOrig)
 
-	err := rootCmd.Flags().Set("logLevel", "infoooo")
+	err = rootCmd.Flags().Set("verbose", "true")
 	assert.Nil(t, err)
 
 	err = rootCmd.Execute()
-	assert.NotNil(t, err)
+	assert.Nil(t, err)
 
-	_ = rootCmd.Flags().Set("logLevel", logLevelOrig)
+	_ = rootCmd.Flags().Set("verbose", strconv.FormatBool(verboseOrig))
 }

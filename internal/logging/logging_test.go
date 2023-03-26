@@ -12,12 +12,6 @@ func TestGetLogger(t *testing.T) {
 	assert.NotNil(t, logger)
 }
 
-func TestSetLogLevel(t *testing.T) {
-	err := SetLogLevel("debug")
-	assert.Nil(t, err)
-}
-
-func TestSetLogLevelInvalidLevel(t *testing.T) {
-	err := SetLogLevel("invalidloglevel")
-	assert.NotNil(t, err)
+func TestEnableDebugLogging(t *testing.T) {
+	EnableDebugLogging()
 }

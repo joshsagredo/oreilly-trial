@@ -2,6 +2,7 @@ package oreilly
 
 import (
 	"fmt"
+	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -28,7 +29,7 @@ func TestGenerateError(t *testing.T) {
 
 	apiURLOrig := apiURL
 	apiURL = server.URL
-	err := Generate("notreallyrequiredmail@example.com", "123123123123")
+	err := Generate("notreallyrequiredmail@example.com", "123123123123", logging.GetLogger())
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
 
@@ -42,7 +43,7 @@ func TestGenerateInvalidHost(t *testing.T) {
 	apiURLOrig := apiURL
 	apiURL = "https://foo.example.com/"
 
-	err := Generate("notreallyrequiredmail@example.com", "123123123123")
+	err := Generate("notreallyrequiredmail@example.com", "123123123123", logging.GetLogger())
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), expectedError)
 
@@ -70,7 +71,7 @@ func TestGenerateValidArgs(t *testing.T) {
 				assert.NotEmpty(t, email)
 				assert.Nil(t, err)
 
-				err = Generate(email, password)
+				err = Generate(email, password, logging.GetLogger())
 
 				if err == nil {
 					break
