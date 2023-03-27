@@ -1,10 +1,11 @@
 package root
 
 import (
-	"github.com/bilalcaliskan/oreilly-trial/cmd/root/options"
-	"github.com/rs/zerolog"
 	"os"
 	"strings"
+
+	"github.com/bilalcaliskan/oreilly-trial/cmd/root/options"
+	"github.com/rs/zerolog"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/generator"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
@@ -107,9 +108,7 @@ func init() {
 	opts = options.GetRootOptions()
 	opts.InitFlags(rootCmd)
 
-	if err := rootCmd.Flags().MarkHidden("bannerFilePath"); err != nil {
-		logger.Warn().Str("error", err.Error()).Msg("an error occurred while hiding flag, ignoring...")
-	}
+	_ = rootCmd.Flags().MarkHidden("bannerFilePath")
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

@@ -2,15 +2,21 @@ package generator
 
 import (
 	"fmt"
-	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"sync"
 	"testing"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestRunGenerator_DomainError(t *testing.T) {
+func TestRunGenerator(t *testing.T) {
+	err := RunGenerator()
+	assert.Nil(t, err)
+}
+
+func TestRunGeneratorDomainError(t *testing.T) {
 	apiURLOrig := mail.ApiURL //nolint:typecheck
 	mail.ApiURL = "https://dropmail.p.rapidapi.co/"
 
@@ -20,7 +26,7 @@ func TestRunGenerator_DomainError(t *testing.T) {
 	mail.ApiURL = apiURLOrig
 }
 
-func TestRunGenerator_GenerateTempMailError(t *testing.T) {
+func TestRunGeneratorGenerateTempMailError(t *testing.T) {
 	apiURLOrig := mail.ApiURL //nolint:typecheck
 	response := "{\"data\":{\"domains\":[{\"name\":\"10mail.org\",\"introducedAt\":\"2013-11-13T11:00:00.000+00:00\"," +
 		"\"id\":\"RG9tYWluOjI\",\"availableVia\":[\"APP\",\"API\",\"TELEGRAM\",\"VIBER\",\"WEB\"]},{\"name\":\"10mail.tk\"" +
@@ -62,7 +68,7 @@ func TestRunGenerator_GenerateTempMailError(t *testing.T) {
 	mail.ApiURL = apiURLOrig
 }
 
-func TestRunGenerator_TrialAccountCreateError(t *testing.T) {
+func TestRunGeneratorTrialAccountCreateError(t *testing.T) {
 	apiURLOrig := mail.ApiURL //nolint:typecheck
 
 	rr := newResponseWriter()
