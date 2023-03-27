@@ -4,6 +4,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/prompt"
+
 	"github.com/bilalcaliskan/oreilly-trial/cmd/root/options"
 	"github.com/rs/zerolog"
 
@@ -17,37 +19,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type SelectRunner interface {
-	Run() (int, string, error)
-}
-
-//func getSelectRunner() promptui.Select {
-//	return promptui.Select{
-//		Label: "An error occurred while generating Oreilly account with temporary mail, would you like to provide your own valid email address?",
-//		Items: []string{"Yes please!", "No thanks!"},
-//	}
-//}
-
-type PromptRunner interface {
-	Run() (string, error)
-}
-
-//func getPromptRunner() promptui.Prompt {
-//	return promptui.Prompt{
-//		Label: "Your valid email address",
-//		Validate: func(s string) error {
-//			if !mail.IsValidEmail(s) {
-//				return errors.New("no valid email provided by user")
-//			}
-//
-//			return nil
-//		},
-//	}
-//}
-
 var (
-	selectRunner SelectRunner
-	promptRunner PromptRunner
+	selectRunner prompt.SelectRunner = prompt.GetSelectRunner()
+	promptRunner prompt.PromptRunner = prompt.GetPromptRunner()
 	opts         *options.RootOptions
 	ver          = version.Get()
 	logger       zerolog.Logger

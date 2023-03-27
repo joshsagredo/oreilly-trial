@@ -1,38 +1,69 @@
 package root
 
 import (
+	"errors"
 	"strconv"
 	"testing"
+
+	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
+	"github.com/bilalcaliskan/oreilly-trial/internal/prompt"
 
 	"github.com/stretchr/testify/assert"
 )
 
-//type promptMock struct {
-//	// t is not required for this test, but it is would be helpful to assert input parameters if we have it in Run()
-//	t *testing.T
-//}
-//
-//func (p promptMock) Run() (string, error) {
-//	// return expected result
-//	return "", nil
-//}
-//
-//type selectMock struct {
-//	t *testing.T
-//}
-//
-//func (p selectMock) Run() (int, string, error) {
-//	// return expected result
-//	return 1, "No thanks!", nil
-//}
+type promptMock struct {
+	msg string
+	err error
+}
 
-//func TestExecuteSelect(t *testing.T) {
-//	selectRunner = selectMock{}
-//
-//	mail.PredefinedValidDomains = []string{"ssss.com"}
-//	err := rootCmd.Execute()
-//	assert.NotNil(t, err)
-//}
+func (p promptMock) Run() (string, error) {
+	// return expected result
+	return p.msg, p.err
+}
+
+type selectMock struct {
+	msg string
+	err error
+}
+
+func (p selectMock) Run() (int, string, error) {
+	// return expected result
+	return 1, p.msg, p.err
+}
+
+func TestExecuteWithPromptsSuccessSelectFailPrompt(t *testing.T) {
+	// get original value for valid domains
+	predefinedValidDomainsOrg := mail.PredefinedValidDomains
+
+	// override valid domains
+	mail.PredefinedValidDomains = []string{"ssss.com"}
+
+	selectRunner = selectMock{msg: "Yes please!", err: nil}
+	promptRunner = promptMock{msg: "nonexistedemailaddress@example.com", err: errors.New("dummy error")}
+	err := rootCmd.Execute()
+	assert.NotNil(t, err)
+
+	// revert valid domains
+	mail.PredefinedValidDomains = predefinedValidDomainsOrg
+	selectRunner = prompt.GetSelectRunner()
+	promptRunner = prompt.GetPromptRunner()
+}
+
+func TestExecuteWithPromptsFailSelect(t *testing.T) {
+	// get original value for valid domains
+	predefinedValidDomainsOrg := mail.PredefinedValidDomains
+
+	// override valid domains
+	mail.PredefinedValidDomains = []string{"ssss.com"}
+
+	selectRunner = selectMock{msg: "No thanks!", err: nil}
+	err := rootCmd.Execute()
+	assert.NotNil(t, err)
+
+	// revert valid domains
+	mail.PredefinedValidDomains = predefinedValidDomainsOrg
+	selectRunner = prompt.GetSelectRunner()
+}
 
 func TestExecute(t *testing.T) {
 	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
