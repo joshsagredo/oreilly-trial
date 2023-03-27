@@ -30,6 +30,7 @@ var (
 		Use:           "oreilly-trial",
 		Short:         "Trial account generator tool for Oreilly",
 		Version:       ver.GitVersion,
+		SilenceUsage:  true,
 		SilenceErrors: true,
 		Long: `As you know, you can create 10 day free trial for https://learning.oreilly.com/ for testing purposes.
 This tool does couple of simple steps to provide free trial account for you`,
