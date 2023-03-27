@@ -79,6 +79,10 @@ func TestExecute(t *testing.T) {
 	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 }
 
+func TestExecute2(t *testing.T) {
+	Execute()
+}
+
 func TestExecuteMissingBannerFile(t *testing.T) {
 	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
 	assert.NotNil(t, bannerFilePathOrig)

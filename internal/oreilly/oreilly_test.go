@@ -2,13 +2,14 @@ package oreilly
 
 import (
 	"fmt"
-	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
 	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -52,33 +53,23 @@ func TestGenerateInvalidHost(t *testing.T) {
 
 // TestGenerateValidArgs function tests if Generate function running properly with proper values
 func TestGenerateValidArgs(t *testing.T) {
-	cases := []struct {
-		caseName string
-	}{
-		{"case1"},
+	password, err := random.GeneratePassword()
+	assert.NotEmpty(t, password)
+	assert.Nil(t, err)
+
+	domains, _ := mail.GetPossiblyValidDomains()
+
+	for _, id := range domains {
+		email, err := mail.GenerateTempMail(id)
+		assert.NotEmpty(t, email)
+		assert.Nil(t, err)
+
+		err = Generate(email, password, logging.GetLogger())
+
+		if err == nil {
+			break
+		}
 	}
 
-	for _, tc := range cases {
-		t.Run(tc.caseName, func(t *testing.T) {
-			password, err := random.GeneratePassword()
-			assert.NotEmpty(t, password)
-			assert.Nil(t, err)
-
-			domains, _ := mail.GetPossiblyValidDomains()
-
-			for _, id := range domains {
-				email, err := mail.GenerateTempMail(id)
-				assert.NotEmpty(t, email)
-				assert.Nil(t, err)
-
-				err = Generate(email, password, logging.GetLogger())
-
-				if err == nil {
-					break
-				}
-			}
-
-			assert.Nil(t, err)
-		})
-	}
+	assert.Nil(t, err)
 }

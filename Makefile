@@ -111,7 +111,7 @@ update: tidy
 .PHONY: build
 build: tidy
 	$(info building binary...)
-	go build -o bin/main main.go || (echo an error while building binary, exiting!; sh -c 'exit 1';)
+	go build -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" -o bin/main main.go || (echo an error while building binary, exiting!; sh -c 'exit 1';)
 
 .PHONY: run
 run: tidy
