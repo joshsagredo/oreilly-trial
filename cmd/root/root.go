@@ -8,13 +8,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/generator"
-	"github.com/bilalcaliskan/oreilly-trial/internal/mail"
 	"github.com/bilalcaliskan/oreilly-trial/internal/oreilly"
 	"github.com/bilalcaliskan/oreilly-trial/internal/random"
-	"github.com/manifoldco/promptui"
-
-	"github.com/pkg/errors"
-
 	"github.com/bilalcaliskan/oreilly-trial/internal/version"
 
 	"github.com/bilalcaliskan/oreilly-trial/internal/logging"
@@ -22,10 +17,40 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type SelectRunner interface {
+	Run() (int, string, error)
+}
+
+//func getSelectRunner() promptui.Select {
+//	return promptui.Select{
+//		Label: "An error occurred while generating Oreilly account with temporary mail, would you like to provide your own valid email address?",
+//		Items: []string{"Yes please!", "No thanks!"},
+//	}
+//}
+
+type PromptRunner interface {
+	Run() (string, error)
+}
+
+//func getPromptRunner() promptui.Prompt {
+//	return promptui.Prompt{
+//		Label: "Your valid email address",
+//		Validate: func(s string) error {
+//			if !mail.IsValidEmail(s) {
+//				return errors.New("no valid email provided by user")
+//			}
+//
+//			return nil
+//		},
+//	}
+//}
+
 var (
-	opts   *options.RootOptions
-	ver    = version.Get()
-	logger zerolog.Logger
+	selectRunner SelectRunner
+	promptRunner PromptRunner
+	opts         *options.RootOptions
+	ver          = version.Get()
+	logger       zerolog.Logger
 	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
 		Use:           "oreilly-trial",
@@ -53,25 +78,10 @@ This tool does couple of simple steps to provide free trial account for you`,
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := generator.RunGenerator(); err != nil {
-				prompt := promptui.Select{
-					Label: "An error occurred while generating Oreilly account with temporary mail, would you like to provide your own valid email address?",
-					Items: []string{"Yes please!", "No thanks!"},
-				}
-				_, result, _ := prompt.Run()
+				_, result, _ := selectRunner.Run()
 				switch result {
 				case "Yes please!":
-					prompt := promptui.Prompt{
-						Label: "Your valid email address",
-						Validate: func(s string) error {
-							if !mail.IsValidEmail(s) {
-								return errors.Wrap(err, "no valid email provided by user")
-							}
-
-							return nil
-						},
-					}
-
-					mail, _ := prompt.Run()
+					mail, _ := promptRunner.Run()
 
 					password, err := random.GeneratePassword()
 					if err != nil {

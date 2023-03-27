@@ -1,10 +1,38 @@
 package root
 
 import (
-	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+//type promptMock struct {
+//	// t is not required for this test, but it is would be helpful to assert input parameters if we have it in Run()
+//	t *testing.T
+//}
+//
+//func (p promptMock) Run() (string, error) {
+//	// return expected result
+//	return "", nil
+//}
+//
+//type selectMock struct {
+//	t *testing.T
+//}
+//
+//func (p selectMock) Run() (int, string, error) {
+//	// return expected result
+//	return 1, "No thanks!", nil
+//}
+
+//func TestExecuteSelect(t *testing.T) {
+//	selectRunner = selectMock{}
+//
+//	mail.PredefinedValidDomains = []string{"ssss.com"}
+//	err := rootCmd.Execute()
+//	assert.NotNil(t, err)
+//}
 
 func TestExecute(t *testing.T) {
 	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
