@@ -31,8 +31,6 @@ Flags:
   -v, --version   version for oreilly-trial
 ```
 
-> By default, oreilly-trial attempts to create trial account **--attemptCount** times. Default value of that flag is 10, if you can not create trial account in **--attemptCount** attempts, please increase that value in the range of 1-20.
-
 ## Installation
 
 ### Binary
