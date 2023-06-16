@@ -1,8 +1,8 @@
-ERRCHECK_VERSION = latest
-GOLANGCI_LINT_VERSION = latest
-REVIVE_VERSION = latest
-GOIMPORTS_VERSION = latest
-INEFFASSIGN_VERSION = latest
+ERRCHECK_VERSION ?= latest
+GOLANGCI_LINT_VERSION ?= latest
+REVIVE_VERSION ?= latest
+GOIMPORTS_VERSION ?= latest
+INEFFASSIGN_VERSION ?= latest
 
 LOCAL_BIN := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))/.bin
 
