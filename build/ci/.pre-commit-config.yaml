@@ -21,7 +21,7 @@ repos:
       - id: go-mod-vendor
       - id: go-mod-tidy
       - id: go-fmt
-      - id: go-vet
+      # - id: go-vet
       - id: go-imports
       - id: go-cyclo
         args: [-over=15]

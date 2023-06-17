@@ -20,13 +20,13 @@ import (
 )
 
 var (
-	selectRunner prompt.SelectRunner = prompt.GetSelectRunner()
-	promptRunner prompt.PromptRunner = prompt.GetPromptRunner()
+	SelectRunner prompt.SelectRunner = prompt.GetSelectRunner()
+	PromptRunner prompt.PromptRunner = prompt.GetPromptRunner()
 	opts         *options.RootOptions
 	ver          = version.Get()
 	logger       zerolog.Logger
-	// rootCmd represents the base command when called without any subcommands
-	rootCmd = &cobra.Command{
+	// RootCmd represents the base command when called without any subcommands
+	RootCmd = &cobra.Command{
 		Use:           "oreilly-trial",
 		Short:         "Trial account generator tool for Oreilly",
 		Version:       ver.GitVersion,
@@ -53,10 +53,10 @@ This tool does couple of simple steps to provide free trial account for you`,
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := generator.RunGenerator(); err != nil {
-				_, result, _ := selectRunner.Run()
+				_, result, _ := SelectRunner.Run()
 				switch result {
 				case "Yes please!":
-					mail, _ := promptRunner.Run()
+					mail, _ := PromptRunner.Run()
 
 					password, err := random.GeneratePassword()
 					if err != nil {
@@ -91,15 +91,15 @@ This tool does couple of simple steps to provide free trial account for you`,
 
 func init() {
 	opts = options.GetRootOptions()
-	opts.InitFlags(rootCmd)
+	opts.InitFlags(RootCmd)
 
-	_ = rootCmd.Flags().MarkHidden("bannerFilePath")
+	_ = RootCmd.Flags().MarkHidden("bannerFilePath")
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// This is called by main.main(). It only needs to happen once to the RootCmd.
 func Execute() {
-	err := rootCmd.Execute()
+	err := RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
