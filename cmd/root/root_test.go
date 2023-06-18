@@ -41,15 +41,15 @@ func TestExecuteWithPromptsSuccessSelectFailPrompt(t *testing.T) {
 	// override valid domains
 	mail.PredefinedValidDomains = []string{"ssss.com"}
 
-	SelectRunner = selectMock{msg: "Yes please!", err: nil}
-	PromptRunner = promptMock{msg: "nonexistedemailaddress@example.com", err: errors.New("dummy error")}
-	err := RootCmd.Execute()
+	selectRunner = selectMock{msg: "Yes please!", err: nil}
+	promptRunner = promptMock{msg: "nonexistedemailaddress@example.com", err: errors.New("dummy error")}
+	err := rootCmd.Execute()
 	assert.NotNil(t, err)
 
 	// revert valid domains
 	mail.PredefinedValidDomains = predefinedValidDomainsOrg
-	SelectRunner = prompt.GetSelectRunner()
-	PromptRunner = prompt.GetPromptRunner()
+	selectRunner = prompt.GetSelectRunner()
+	promptRunner = prompt.GetPromptRunner()
 }
 
 func TestExecuteWithPromptsFailSelect(t *testing.T) {
@@ -59,27 +59,27 @@ func TestExecuteWithPromptsFailSelect(t *testing.T) {
 	// override valid domains
 	mail.PredefinedValidDomains = []string{"ssss.com"}
 
-	SelectRunner = selectMock{msg: "No thanks!", err: nil}
-	err := RootCmd.Execute()
+	selectRunner = selectMock{msg: "No thanks!", err: nil}
+	err := rootCmd.Execute()
 	assert.NotNil(t, err)
 
 	// revert valid domains
 	mail.PredefinedValidDomains = predefinedValidDomainsOrg
-	SelectRunner = prompt.GetSelectRunner()
+	selectRunner = prompt.GetSelectRunner()
 }
 
 func TestExecute(t *testing.T) {
-	bannerFilePathOrig, _ := RootCmd.Flags().GetString("bannerFilePath")
+	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
 	assert.NotNil(t, bannerFilePathOrig)
 	assert.NotEmpty(t, bannerFilePathOrig)
 
-	err := RootCmd.Flags().Set("bannerFilePath", "./../build/ci/banner.txt")
+	err := rootCmd.Flags().Set("bannerFilePath", "./../build/ci/banner.txt")
 	assert.Nil(t, err)
 
-	err = RootCmd.Execute()
+	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
-	_ = RootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
+	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 }
 
 func TestExecute2(t *testing.T) {
@@ -87,28 +87,28 @@ func TestExecute2(t *testing.T) {
 }
 
 func TestExecuteMissingBannerFile(t *testing.T) {
-	bannerFilePathOrig, _ := RootCmd.Flags().GetString("bannerFilePath")
+	bannerFilePathOrig, _ := rootCmd.Flags().GetString("bannerFilePath")
 	assert.NotNil(t, bannerFilePathOrig)
 	assert.NotEmpty(t, bannerFilePathOrig)
 
-	err := RootCmd.Flags().Set("bannerFilePath", "asdfasdfasdf")
+	err := rootCmd.Flags().Set("bannerFilePath", "asdfasdfasdf")
 	assert.Nil(t, err)
 
-	_ = RootCmd.Execute()
+	_ = rootCmd.Execute()
 
-	_ = RootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
+	_ = rootCmd.Flags().Set("bannerFilePath", bannerFilePathOrig)
 }
 
 func TestExecuteVerbose(t *testing.T) {
-	verboseOrig, err := RootCmd.Flags().GetBool("verbose")
+	verboseOrig, err := rootCmd.Flags().GetBool("verbose")
 	assert.Nil(t, err)
 	assert.False(t, verboseOrig)
 
-	err = RootCmd.Flags().Set("verbose", "true")
+	err = rootCmd.Flags().Set("verbose", "true")
 	assert.Nil(t, err)
 
-	err = RootCmd.Execute()
+	err = rootCmd.Execute()
 	assert.Nil(t, err)
 
-	_ = RootCmd.Flags().Set("verbose", strconv.FormatBool(verboseOrig))
+	_ = rootCmd.Flags().Set("verbose", strconv.FormatBool(verboseOrig))
 }
