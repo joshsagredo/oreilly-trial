@@ -52,7 +52,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
-      - name: Test
+      - name: Run unit tests
         run: make -s test-unit
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -71,7 +71,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
-      - name: Test
+      - name: Run e2e tests
         run: make -s test-e2e
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
