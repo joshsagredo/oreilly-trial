@@ -1,8 +1,12 @@
+//go:build unit
+// +build unit
+
 package mail
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIsValidEmail(t *testing.T) {
