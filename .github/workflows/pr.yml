@@ -106,7 +106,7 @@ jobs:
           go-version-file: "go.mod"
           cache: true
       - name: Coverage Test
-        run: make -s test-with-coverage
+        run: make -s test
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
       - name: SonarCloud Scan
