@@ -98,26 +98,22 @@ run-vet:
 .PHONY: test
 test: tidy
 	$(info starting the test for whole module...)
-	go test -tags "unit e2e integration" -failfast -vet=off -race ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
+	go test -tags "unit e2e integration" -failfast -vet=off -race -coverprofile=all_coverage.txt -covermode=atomic ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
 
 .PHONY: test-unit
 test-unit: tidy
 	$(info starting the unit test for whole module...)
-	go test -tags "unit" -failfast -vet=off -race ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
+	go test -tags "unit" -failfast -vet=off -race -coverprofile=unit_coverage.txt -covermode=atomic ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
 
 .PHONY: test-e2e
 test-e2e: tidy
 	$(info starting the e2e test for whole module...)
-	go test -tags "e2e" -failfast -vet=off -race ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
+	go test -tags "e2e" -failfast -vet=off -race -coverprofile=e2e_coverage.txt -covermode=atomic ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
 
 .PHONY: test-integration
 test-integration: tidy
 	$(info starting the integration test for whole module...)
-	go test -tags "integration" -failfast -vet=off -race ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
-
-.PHONY: test-with-coverage
-test-with-coverage: tidy
-	go test -tags "unit e2e integration" ./... -race -coverprofile=coverage.txt -covermode=atomic -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
+	go test -tags "integration" -failfast -vet=off -race -coverprofile=integration_coverage.txt -covermode=atomic ./... -ldflags="-X github.com/bilalcaliskan/oreilly-trial/internal/mail.token=${API_TOKEN}" || (echo an error while testing, exiting!; sh -c 'exit 1';)
 
 .PHONY: update
 update: tidy
