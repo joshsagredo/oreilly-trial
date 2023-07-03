@@ -57,44 +57,6 @@ jobs:
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
 
-#  unit_tests:
-#    # strategy:
-#    #   matrix:
-#    #     os: [ubuntu-latest, macos-latest]
-#    # runs-on: ${{ matrix.os }}
-#    runs-on: macos-latest
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#      - name: Install Go
-#        uses: actions/setup-go@v4
-#        with:
-#          go-version-file: "go.mod"
-#          cache: true
-#      - name: Run unit tests
-#        run: make -s test-unit
-#        env:
-#          API_TOKEN: ${{ secrets.API_TOKEN }}
-#
-#  e2e_tests:
-#    # strategy:
-#    #   matrix:
-#    #     os: [ubuntu-latest, macos-latest]
-#    # runs-on: ${{ matrix.os }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#      - name: Install Go
-#        uses: actions/setup-go@v4
-#        with:
-#          go-version-file: "go.mod"
-#          cache: true
-#      - name: Run e2e tests
-#        run: make -s test-e2e
-#        env:
-#          API_TOKEN: ${{ secrets.API_TOKEN }}
-
   codeql:
     runs-on: ubuntu-latest
     strategy:
