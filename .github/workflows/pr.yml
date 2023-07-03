@@ -52,7 +52,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
-      - name: Run unit tests
+      - name: Run ${{ matrix.name }} tests
         run: make -s test-${{ matrix.name }}
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
@@ -157,7 +157,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache: true
-      - name: Test
+      - name: Build on (${{ matrix.os }})
         run: make -s build
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
