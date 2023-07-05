@@ -17,6 +17,7 @@ builds:
       - darwin
     goarch:
       - amd64
+      - arm64
     binary: oreilly-trial
     ldflags:
       - -s -w -X github.com/bilalcaliskan/oreilly-trial/internal/version.gitVersion={{ .Version }}
@@ -26,12 +27,14 @@ builds:
     main: ./main.go
 
 archives:
-  - replacements:
-      amd64: x86_64
-    files:
-      - build/ci/banner.txt
+  - files:
       - README.md
       - LICENSE
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
 
 dockers:
   - image_templates:
