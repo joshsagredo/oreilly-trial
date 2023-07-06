@@ -13,6 +13,13 @@ all: clean tools lint fmt test build
 clean:
 	rm -rf $(LOCAL_BIN)
 
+.PHONY: pre-commit-setup
+pre-commit-setup:
+	#python3 -m venv venv
+	#source venv/bin/activate
+	#pip3 install pre-commit
+	pre-commit install -c build/ci/.pre-commit-config.yaml
+
 .PHONY: tools
 tools:  golangci-lint-install revive-install go-imports-install ineffassign-install errcheck-install
 	go mod tidy

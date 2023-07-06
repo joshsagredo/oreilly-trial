@@ -68,7 +68,7 @@ This project requires below tools while developing:
 
 After you installed [pre-commit](https://pre-commit.com/), simply run below command to prepare your development environment:
 ```shell
-$ pre-commit install -c build/ci/.pre-commit-config.yaml
+$ make pre-commit-setup
 ```
 
 ## License
